@@ -4,13 +4,13 @@
 
 import { firebaseConfig, isMockMode } from "./config.js";
 
-// Importaciones dinámicas del SDK de Firebase desde CDN
+// SDKs de Firebase cargados dinámicamente desde CDN
 let db, storage, auth;
 let initialized = false;
 
 const useMock = isMockMode();
 
-// Datos Simulados Iniciales (Mock Data de Velas y Vidrios)
+// Datos Simulados por Defecto (Mock Data)
 const defaultMockProductos = [
   { id: 'Vela-Grande-Blanco', nombre: 'Vela Grande Blanco', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK', categoria_id: 'Velas', descripcion: 'Medida 18x10' },
   { id: 'Vela-Grande-Negro', nombre: 'Vela Grande Negro', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-', categoria_id: 'Velas', descripcion: 'Medida 18x10' },
@@ -34,21 +34,32 @@ const defaultMockProductos = [
   { id: 'Vidrio-8', nombre: 'Vidrio 8', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu', categoria_id: 'Vidrios', descripcion: '' }
 ];
 
-const defaultMockVendedor = {
-  nombre: 'Component New House',
-  telefono: '5491173564074',
-  miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq'
-};
+const defaultMockCategorias = [
+  { id: 'Velas', nombre: 'Velas', imagen: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' },
+  { id: 'Vidrios', nombre: 'Vidrios', imagen: 'https://lh3.googleusercontent.com/d/1ebuXB_EbgPhsZefF7RiE0FRLKEAP3raC' }
+];
 
-// Inicialización de la base de datos (Firebase o LocalStorage)
+const defaultMockVendedores = [
+  { id: 'vendedor_component', nombre: 'Component New House', telefono: '5491173564074', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' }
+];
+
+// Variables globales de datos cargados
+let allProducts = [];
+let allCategories = [];
+let allSellers = [];
+
+// Inicialización de base de datos
 async function initDatabase() {
   if (useMock) {
     console.log("🚀 Iniciando en Modo Offline Simulador (Mock Mode)");
     if (!localStorage.getItem("admin_productos")) {
       localStorage.setItem("admin_productos", JSON.stringify(defaultMockProductos));
     }
-    if (!localStorage.getItem("admin_vendedor")) {
-      localStorage.setItem("admin_vendedor", JSON.stringify(defaultMockVendedor));
+    if (!localStorage.getItem("admin_categorias")) {
+      localStorage.setItem("admin_categorias", JSON.stringify(defaultMockCategorias));
+    }
+    if (!localStorage.getItem("admin_vendedores")) {
+      localStorage.setItem("admin_vendedores", JSON.stringify(defaultMockVendedores));
     }
     updateConnectionBadge(true);
     initialized = true;
@@ -57,7 +68,6 @@ async function initDatabase() {
     try {
       console.log("🔗 Conectando al SDK de Firebase...");
       
-      // Importamos dinámicamente los CDN de Firebase
       const firebaseApp = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
       const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
       const storageSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
@@ -70,7 +80,6 @@ async function initDatabase() {
 
       updateConnectionBadge(false);
       
-      // Suscribirse a cambios de Auth
       authSdk.onAuthStateChanged(auth, (user) => {
         if (user) {
           showDashboard(user.email);
@@ -82,16 +91,15 @@ async function initDatabase() {
     } catch (error) {
       console.error("❌ Error de inicio Firebase. Cambiando a Modo Simulado:", error);
       updateConnectionBadge(true, true);
-      // Fallback a mock si falla la conexión o hay error
       localStorage.setItem("admin_productos", localStorage.getItem("admin_productos") || JSON.stringify(defaultMockProductos));
-      localStorage.setItem("admin_vendedor", localStorage.getItem("admin_vendedor") || JSON.stringify(defaultMockVendedor));
+      localStorage.setItem("admin_categorias", localStorage.getItem("admin_categorias") || JSON.stringify(defaultMockCategorias));
+      localStorage.setItem("admin_vendedores", localStorage.getItem("admin_vendedores") || JSON.stringify(defaultMockVendedores));
       initialized = true;
       checkAuthState();
     }
   }
 }
 
-// Actualiza el indicador de conexión superior
 function updateConnectionBadge(isMock, hasError = false) {
   const badge = document.getElementById("db-status-badge");
   const text = document.getElementById("db-status-text");
@@ -109,7 +117,6 @@ function updateConnectionBadge(isMock, hasError = false) {
   }
 }
 
-// Control de vistas de sesión
 function checkAuthState() {
   const loggedIn = localStorage.getItem("admin_logged_in") === "true";
   const userEmail = localStorage.getItem("admin_user_email") || "simulado@tienda.com";
@@ -133,17 +140,14 @@ function showLogin() {
   document.getElementById("app-layout").classList.add("hidden");
 }
 
-// Cargar y pintar datos generales
-let allProducts = [];
-let vendorData = {};
-
+// Cargar y pintar datos de colecciones
 async function loadInitialData() {
   try {
     if (useMock) {
       allProducts = JSON.parse(localStorage.getItem("admin_productos") || "[]");
-      vendorData = JSON.parse(localStorage.getItem("admin_vendedor") || "{}");
+      allCategories = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
+      allSellers = JSON.parse(localStorage.getItem("admin_vendedores") || "[]");
     } else {
-      // Leer de Firestore real
       const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
       
       // Productos
@@ -161,25 +165,39 @@ async function loadInitialData() {
         });
       });
 
-      // Vendedor
-      const sellerSnap = await firestoreSdk.getDocs(firestoreSdk.collection(db, "vendedores"));
-      if (!sellerSnap.empty) {
-        const doc = sellerSnap.docs[0];
+      // Categorías
+      const catSnap = await firestoreSdk.getDocs(firestoreSdk.collection(db, "categorias"));
+      allCategories = [];
+      catSnap.forEach(doc => {
         const data = doc.data();
-        vendorData = {
+        allCategories.push({
           id: doc.id,
-          nombre: data.nombre || 'Component New House',
+          nombre: data.nombre || doc.id,
+          imagen: data.imagen || ''
+        });
+      });
+      if (allCategories.length === 0) allCategories = defaultMockCategorias;
+
+      // Vendedores
+      const sellerSnap = await firestoreSdk.getDocs(firestoreSdk.collection(db, "vendedores"));
+      allSellers = [];
+      sellerSnap.forEach(doc => {
+        const data = doc.data();
+        allSellers.push({
+          id: doc.id,
+          nombre: data.nombre || 'Vendedor',
           telefono: data.telefono || '',
           miniatura: data.miniatura || ''
-        };
-      } else {
-        vendorData = defaultMockVendedor;
-      }
+        });
+      });
+      if (allSellers.length === 0) allSellers = defaultMockVendedores;
     }
 
     renderDashboardStats();
+    populateSelectFilters();
     renderProductsTable();
-    populateStoreSettings();
+    renderCategoriesGrid();
+    renderSellersGrid();
   } catch (error) {
     console.error("Error cargando base de datos:", error);
   }
@@ -188,12 +206,40 @@ async function loadInitialData() {
 // Pintar estadísticas en dashboard
 function renderDashboardStats() {
   document.getElementById("stat-products-count").innerText = allProducts.length;
+  document.getElementById("stat-categories-count").innerText = allCategories.length;
+  document.getElementById("stat-sellers-count").innerText = allSellers.length;
   
-  // Categorías distintas
-  const categories = [...new Set(allProducts.map(p => p.categoria_id))].filter(Boolean);
-  document.getElementById("stat-categories-count").innerText = categories.length;
+  const primeSeller = allSellers[0];
+  document.getElementById("stat-vendedor-phone").innerText = primeSeller ? `${primeSeller.nombre} (${primeSeller.telefono})` : "Sin registrar";
+}
+
+// Rellenar dinámicamente los selects de categorías en la UI
+function populateSelectFilters() {
+  const filterSelect = document.getElementById("filter-category");
+  const modalSelect = document.getElementById("product-category");
   
-  document.getElementById("stat-vendedor-phone").innerText = vendorData.telefono || "Sin registrar";
+  const selectedFilterValue = filterSelect.value || "all";
+  const selectedModalValue = modalSelect.value || "";
+
+  filterSelect.innerHTML = `<option value="all">Todas las Categorías</option>`;
+  modalSelect.innerHTML = "";
+
+  allCategories.forEach(cat => {
+    // Opción en filtro
+    const optF = document.createElement("option");
+    optF.value = cat.id;
+    optF.innerText = cat.nombre;
+    filterSelect.appendChild(optF);
+
+    // Opción en modal
+    const optM = document.createElement("option");
+    optM.value = cat.id;
+    optM.innerText = cat.nombre;
+    modalSelect.appendChild(optM);
+  });
+
+  filterSelect.value = selectedFilterValue;
+  if (selectedModalValue) modalSelect.value = selectedModalValue;
 }
 
 // Pintar listado de productos
@@ -227,7 +273,7 @@ function renderProductsTable() {
       </td>
       <td class="py-4 px-6 font-semibold text-white">${p.nombre}</td>
       <td class="py-4 px-6 text-slate-400">
-        <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${p.categoria_id === 'Velas' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'}">
+        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
           ${p.categoria_id}
         </span>
       </td>
@@ -247,7 +293,7 @@ function renderProductsTable() {
     tbody.appendChild(tr);
   });
 
-  // Listener para botones de fila
+  // Listeners para botones de la tabla
   document.querySelectorAll(".edit-prod-btn").forEach(btn => {
     btn.addEventListener("click", () => openProductModal(btn.dataset.id));
   });
@@ -256,29 +302,85 @@ function renderProductsTable() {
   });
 }
 
-// Pintar configuración del Vendedor
-function populateStoreSettings() {
-  document.getElementById("store-name").value = vendorData.nombre || "";
-  document.getElementById("store-phone").value = vendorData.telefono || "";
-  document.getElementById("store-avatar-url").value = vendorData.miniatura || "";
-  
-  updateStorePreview();
+// Pintar la cuadrícula de categorías
+function renderCategoriesGrid() {
+  const grid = document.getElementById("categories-grid");
+  grid.innerHTML = "";
+
+  allCategories.forEach(cat => {
+    const card = document.createElement("div");
+    card.className = "glass-card rounded-2xl overflow-hidden border border-white/5 flex flex-col justify-between";
+    card.innerHTML = `
+      <div class="h-32 bg-slate-900 relative">
+        <img src="${cat.imagen || 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq'}" class="h-full w-full object-cover" onerror="this.src='https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq';">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+        <h4 class="absolute bottom-4 left-4 text-lg font-bold text-white">${cat.nombre}</h4>
+      </div>
+      <div class="p-4 flex justify-between items-center bg-slate-900/30">
+        <span class="text-xs text-slate-400">${allProducts.filter(p => p.categoria_id === cat.id).length} Productos</span>
+        <button class="delete-cat-btn p-2 bg-slate-800/40 hover:bg-red-500/10 hover:text-red-400 rounded-xl border border-white/5 transition-all text-slate-400" data-id="${cat.id}" title="Eliminar Categoría">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Listeners
+  document.querySelectorAll(".delete-cat-btn").forEach(btn => {
+    btn.addEventListener("click", () => deleteCategory(btn.dataset.id));
+  });
 }
 
-function updateStorePreview() {
-  const name = document.getElementById("store-name").value || "Tu Tienda";
-  const phone = document.getElementById("store-phone").value || "54911XXXXXXXX";
-  const avatar = document.getElementById("store-avatar-url").value || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
-  
-  document.getElementById("preview-store-avatar").src = avatar;
-  document.getElementById("preview-store-name").innerText = name;
-  document.getElementById("preview-store-phone").innerText = "WhatsApp: " + phone;
+// Pintar la cuadrícula de vendedores
+function renderSellersGrid() {
+  const grid = document.getElementById("sellers-grid");
+  grid.innerHTML = "";
+
+  allSellers.forEach(seller => {
+    const card = document.createElement("div");
+    card.className = "glass-card p-6 rounded-2xl border border-white/5 flex flex-col items-center text-center space-y-4 justify-between";
+    card.innerHTML = `
+      <div class="flex flex-col items-center space-y-3 w-full">
+        <div class="relative">
+          <img src="${seller.miniatura || 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq'}" class="h-20 w-20 rounded-full border-2 border-emerald-500/30 object-cover bg-slate-900" onerror="this.src='https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq';">
+          <span class="absolute bottom-0 right-0 h-3.5 w-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+        </div>
+        <div>
+          <h4 class="text-lg font-bold text-white">${seller.nombre}</h4>
+          <p class="text-xs text-emerald-400 font-medium">ID: ${seller.id}</p>
+        </div>
+        
+        <div class="w-full bg-slate-900/40 p-2.5 rounded-xl border border-white/5 text-xs text-slate-300 flex items-center justify-center gap-2">
+          <svg class="h-4 w-4 text-green-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305 1.05a2.11 2.11 0 00-.08 3.13l2.84 2.84a2.11 2.11 0 003.13-.08l1.05-1.305a1 1 0 01.98-.32l2.2.55a1 1 0 01.725.94v3.28a2 2 0 01-2 2h-3c-9.735 0-17.5-7.765-17.5-17.5V5z"/></svg>
+          <span class="font-mono">${seller.telefono}</span>
+        </div>
+      </div>
+
+      <div class="w-full flex gap-2 pt-2 border-t border-white/5 justify-end">
+        <button class="edit-seller-btn px-3 py-1.5 bg-slate-800/40 hover:bg-emerald-500/10 hover:text-emerald-400 rounded-lg border border-white/5 transition-all text-xs font-semibold flex items-center gap-1" data-id="${seller.id}">
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          <span>Editar</span>
+        </button>
+        <button class="delete-seller-btn px-3 py-1.5 bg-slate-800/40 hover:bg-red-500/10 hover:text-red-400 rounded-lg border border-white/5 transition-all text-xs font-semibold text-slate-400 flex items-center gap-1" data-id="${seller.id}">
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          <span>Borrar</span>
+        </button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Listeners
+  document.querySelectorAll(".edit-seller-btn").forEach(btn => {
+    btn.addEventListener("click", () => openSellerModal(btn.dataset.id));
+  });
+  document.querySelectorAll(".delete-seller-btn").forEach(btn => {
+    btn.addEventListener("click", () => deleteSeller(btn.dataset.id));
+  });
 }
 
-// Subida local o Firebase de imágenes
-let selectedImageFile = null;
-
-// Conversor a Base64 para almacenar fotos localmente en localStorage en modo offline
+// Helper para convertir archivo local a base64
 function convertFileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -287,6 +389,7 @@ function convertFileToBase64(file) {
     reader.onerror = error => reject(error);
   });
 }
+
 
 // ==========================================
 // 🔒 ACCIONES DE AUTENTICACIÓN
@@ -301,7 +404,6 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   errDiv.classList.add("hidden");
 
   if (useMock) {
-    // Modo offline simulado -> Cualquier usuario entra
     localStorage.setItem("admin_logged_in", "true");
     localStorage.setItem("admin_user_email", email);
     showDashboard(email);
@@ -340,13 +442,13 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
 // 🔀 NAVEGACIÓN SIDEBAR
 // ==========================================
 function switchSection(sectionId, activeBtnId) {
-  const sections = ["section-dashboard", "section-products", "section-store"];
+  const sections = ["section-dashboard", "section-products", "section-categories", "section-sellers"];
   sections.forEach(s => {
     document.getElementById(s).classList.add("hidden");
   });
   document.getElementById(sectionId).classList.remove("hidden");
 
-  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-store"];
+  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-categories", "nav-btn-sellers"];
   navButtons.forEach(btnId => {
     const btn = document.getElementById(btnId);
     if (btnId === activeBtnId) {
@@ -359,23 +461,25 @@ function switchSection(sectionId, activeBtnId) {
 
 document.getElementById("nav-btn-dashboard").addEventListener("click", () => switchSection("section-dashboard", "nav-btn-dashboard"));
 document.getElementById("nav-btn-products").addEventListener("click", () => switchSection("section-products", "nav-btn-products"));
-document.getElementById("nav-btn-store").addEventListener("click", () => switchSection("section-store", "nav-btn-store"));
+document.getElementById("nav-btn-categories").addEventListener("click", () => switchSection("section-categories", "nav-btn-categories"));
+document.getElementById("nav-btn-sellers").addEventListener("click", () => switchSection("section-sellers", "nav-btn-sellers"));
 
 
 // ==========================================
-// 🔍 FILTROS Y BÚSQUEDA
+// 🔍 BUSCADOR DE PRODUCTOS
 // ==========================================
 document.getElementById("search-input").addEventListener("input", renderProductsTable);
 document.getElementById("filter-category").addEventListener("change", renderProductsTable);
 
 
 // ==========================================
-// 📦 OPERACIONES CRUD (PRODUCTOS)
+// 📦 CRUD: PRODUCTOS (MODAL Y ENVÍO)
 // ==========================================
-const modal = document.getElementById("product-modal");
+const prodModal = document.getElementById("product-modal");
+let prodSelectedFile = null;
 
 function openProductModal(productId = null) {
-  selectedImageFile = null;
+  prodSelectedFile = null;
   document.getElementById("product-form").reset();
   
   const previewImg = document.getElementById("product-preview-img");
@@ -383,6 +487,8 @@ function openProductModal(productId = null) {
   previewImg.classList.add("hidden");
   previewImg.src = "";
   placeholder.classList.remove("hidden");
+
+  populateSelectFilters();
 
   if (productId) {
     document.getElementById("modal-title").innerText = "Editar Producto";
@@ -406,59 +512,39 @@ function openProductModal(productId = null) {
     document.getElementById("product-modal-id").value = "";
   }
   
-  modal.classList.remove("hidden");
+  prodModal.classList.remove("hidden");
 }
 
-function closeModal() {
-  modal.classList.add("hidden");
+function closeProductModal() {
+  prodModal.classList.add("hidden");
 }
 
 document.getElementById("add-product-btn").addEventListener("click", () => openProductModal());
-document.getElementById("close-modal-btn").addEventListener("click", closeModal);
-document.getElementById("cancel-modal-btn").addEventListener("click", closeModal);
+document.getElementById("close-modal-btn").addEventListener("click", closeProductModal);
+document.getElementById("cancel-modal-btn").addEventListener("click", closeProductModal);
 
-// Drag & Drop de imagen
-const imageInput = document.getElementById("image-file-input");
-const dropzone = imageInput.parentElement;
-
-imageInput.addEventListener("change", (e) => {
+// Drag & Drop de imagen en Productos
+const prodImageInput = document.getElementById("image-file-input");
+prodImageInput.addEventListener("change", (e) => {
   if (e.target.files.length > 0) {
-    handleSelectedImage(e.target.files[0]);
+    prodSelectedFile = e.target.files[0];
+    showLocalPreview(prodSelectedFile, "product-preview-img", "product-preview-placeholder");
   }
 });
 
-dropzone.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  dropzone.classList.add("dragover");
-});
-
-dropzone.addEventListener("dragleave", () => {
-  dropzone.classList.remove("dragover");
-});
-
-dropzone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropzone.classList.remove("dragover");
-  if (e.dataTransfer.files.length > 0) {
-    handleSelectedImage(e.dataTransfer.files[0]);
-  }
-});
-
-function handleSelectedImage(file) {
-  selectedImageFile = file;
-  const previewImg = document.getElementById("product-preview-img");
-  const placeholder = document.getElementById("product-preview-placeholder");
-  
+function showLocalPreview(file, imgId, placeholderId) {
+  const img = document.getElementById(imgId);
+  const placeholder = document.getElementById(placeholderId);
   const reader = new FileReader();
   reader.onload = (e) => {
-    previewImg.src = e.target.result;
-    previewImg.classList.remove("hidden");
+    img.src = e.target.result;
+    img.classList.remove("hidden");
     placeholder.classList.add("hidden");
   };
   reader.readAsDataURL(file);
 }
 
-// Envío del Formulario (Guardar / Actualizar)
+// Envío del formulario de producto
 document.getElementById("product-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   
@@ -471,21 +557,18 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
 
   let finalImageUrl = urlInput || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
 
-  // Subir imagen si se seleccionó archivo local
-  if (selectedImageFile) {
+  if (prodSelectedFile) {
     if (useMock) {
-      // Guardar localmente en formato base64 para persistir sin internet
-      finalImageUrl = await convertFileToBase64(selectedImageFile);
+      finalImageUrl = await convertFileToBase64(prodSelectedFile);
     } else {
-      // Subir real a Firebase Storage
       try {
         const storageSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
-        const uniqueName = Date.now() + "_" + selectedImageFile.name;
+        const uniqueName = Date.now() + "_" + prodSelectedFile.name;
         const imgRef = storageSdk.ref(storage, "productos/" + uniqueName);
-        const uploadResult = await storageSdk.uploadBytes(imgRef, selectedImageFile);
+        const uploadResult = await storageSdk.uploadBytes(imgRef, prodSelectedFile);
         finalImageUrl = await storageSdk.getDownloadURL(uploadResult.ref);
       } catch (err) {
-        console.error("Error al subir foto a Firebase Storage:", err);
+        console.error("Error cargando foto a Firebase Storage:", err);
       }
     }
   }
@@ -502,14 +585,10 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   };
 
   if (useMock) {
-    // CRUD en LocalStorage
     let products = JSON.parse(localStorage.getItem("admin_productos") || "[]");
     if (idInput) {
-      // Actualizar existente
       products = products.map(p => p.id === idInput ? productData : p);
     } else {
-      // Insertar nuevo
-      // Validar si existe duplicado
       if (products.some(p => p.id === generatedId)) {
         alert("Ya existe un producto con un nombre similar.");
         return;
@@ -518,7 +597,6 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     }
     localStorage.setItem("admin_productos", JSON.stringify(products));
   } else {
-    // CRUD en Firestore Real
     try {
       const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
       const docRef = firestoreSdk.doc(db, "productos", generatedId);
@@ -530,17 +608,17 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
         descripcion: desc
       });
     } catch (err) {
-      console.error("Error guardando en Firestore:", err);
+      console.error("Error guardando producto en Firestore:", err);
       alert("Error al guardar en el servidor.");
       return;
     }
   }
 
-  closeModal();
+  closeProductModal();
   loadInitialData();
 });
 
-// Eliminar Producto
+// Borrar producto
 async function deleteProduct(productId) {
   if (!confirm("¿Estás seguro de que quieres eliminar este producto?")) return;
 
@@ -554,64 +632,289 @@ async function deleteProduct(productId) {
       const docRef = firestoreSdk.doc(db, "productos", productId);
       await firestoreSdk.deleteDoc(docRef);
     } catch (err) {
-      console.error("Error eliminando de Firestore:", err);
-      alert("No se pudo eliminar el producto del servidor.");
+      console.error(err);
+      alert("Error al borrar de Firestore.");
       return;
     }
   }
-
   loadInitialData();
 }
 
 
 // ==========================================
-// ⚙️ ACTUALIZAR CONFIGURACIÓN DE VENDEDOR
+// 🗂️ CRUD: CATEGORÍAS (MODAL Y ENVÍO)
 // ==========================================
-document.getElementById("store-name").addEventListener("input", updateStorePreview);
-document.getElementById("store-phone").addEventListener("input", updateStorePreview);
-document.getElementById("store-avatar-url").addEventListener("input", updateStorePreview);
+const catModal = document.getElementById("category-modal");
+let catSelectedFile = null;
 
-document.getElementById("store-form").addEventListener("submit", async (e) => {
+function openCategoryModal() {
+  catSelectedFile = null;
+  document.getElementById("category-form").reset();
+  document.getElementById("category-preview-img").classList.add("hidden");
+  document.getElementById("category-preview-placeholder").classList.remove("hidden");
+  catModal.classList.remove("hidden");
+}
+
+function closeCategoryModal() {
+  catModal.classList.add("hidden");
+}
+
+document.getElementById("add-category-btn").addEventListener("click", openCategoryModal);
+document.getElementById("close-cat-modal-btn").addEventListener("click", closeCategoryModal);
+document.getElementById("cancel-cat-modal-btn").addEventListener("click", closeCategoryModal);
+
+// Selección de imagen en Categorías
+document.getElementById("category-image-file-input").addEventListener("change", (e) => {
+  if (e.target.files.length > 0) {
+    catSelectedFile = e.target.files[0];
+    showLocalPreview(catSelectedFile, "category-preview-img", "category-preview-placeholder");
+  }
+});
+
+// Guardar Categoría
+document.getElementById("category-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   
-  const name = document.getElementById("store-name").value.trim();
-  const phone = document.getElementById("store-phone").value.trim();
-  const avatar = document.getElementById("store-avatar-url").value.trim();
+  const name = document.getElementById("category-name").value.trim();
+  const urlInput = document.getElementById("category-img-url").value.trim();
+  const catId = name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
 
-  const newVendorData = {
+  if (allCategories.some(c => c.id.toLowerCase() === catId.toLowerCase())) {
+    alert("Ya existe una categoría con un nombre idéntico o muy similar.");
+    return;
+  }
+
+  let finalImageUrl = urlInput || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
+
+  if (catSelectedFile) {
+    if (useMock) {
+      finalImageUrl = await convertFileToBase64(catSelectedFile);
+    } else {
+      try {
+        const storageSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
+        const uniqueName = Date.now() + "_" + catSelectedFile.name;
+        const imgRef = storageSdk.ref(storage, "categorias/" + uniqueName);
+        const uploadResult = await storageSdk.uploadBytes(imgRef, catSelectedFile);
+        finalImageUrl = await storageSdk.getDownloadURL(uploadResult.ref);
+      } catch (err) {
+        console.error("Error al subir foto de categoría:", err);
+      }
+    }
+  }
+
+  const newCategory = {
+    id: catId,
     nombre: name,
-    telefono: phone,
-    miniatura: avatar
+    imagen: finalImageUrl
   };
 
   if (useMock) {
-    localStorage.setItem("admin_vendedor", JSON.stringify(newVendorData));
-    alert("Configuración de vendedor local actualizada.");
+    const categories = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
+    categories.push(newCategory);
+    localStorage.setItem("admin_categorias", JSON.stringify(categories));
   } else {
     try {
       const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-      const coll = firestoreSdk.collection(db, "vendedores");
-      const snap = await firestoreSdk.getDocs(coll);
-      
-      if (!snap.empty) {
-        // Actualizar el primer documento
-        const docRef = firestoreSdk.doc(db, "vendedores", snap.docs[0].id);
-        await firestoreSdk.updateDoc(docRef, newVendorData);
-      } else {
-        // Crear documento nuevo
-        const docRef = firestoreSdk.doc(db, "vendedores", "vendedor_component");
-        await firestoreSdk.setDoc(docRef, newVendorData);
-      }
-      alert("Configuración de vendedor actualizada en Firestore.");
+      const docRef = firestoreSdk.doc(db, "categorias", catId);
+      await firestoreSdk.setDoc(docRef, {
+        nombre: name,
+        imagen: finalImageUrl
+      });
     } catch (err) {
-      console.error("Error actualizando vendedor:", err);
-      alert("Ocurrió un error al actualizar los datos en el servidor.");
+      console.error(err);
+      alert("Error al guardar categoría en el servidor.");
       return;
     }
   }
 
+  closeCategoryModal();
   loadInitialData();
 });
+
+// Borrar Categoría
+async function deleteCategory(catId) {
+  if (allProducts.some(p => p.categoria_id === catId)) {
+    alert("No se puede eliminar esta categoría porque tiene productos vinculados. Elimina o cambia la categoría de esos productos primero.");
+    return;
+  }
+
+  if (!confirm(`¿Estás seguro de que quieres borrar la categoría "${catId}"?`)) return;
+
+  if (useMock) {
+    let categories = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
+    categories = categories.filter(c => c.id !== catId);
+    localStorage.setItem("admin_categorias", JSON.stringify(categories));
+  } else {
+    try {
+      const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const docRef = firestoreSdk.doc(db, "categorias", catId);
+      await firestoreSdk.deleteDoc(docRef);
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar categoría en Firestore.");
+      return;
+    }
+  }
+  loadInitialData();
+}
+
+
+// ==========================================
+// 👤 CRUD: VENDEDORES (MODAL Y ENVÍO)
+// ==========================================
+const sellerModal = document.getElementById("seller-modal");
+let sellerSelectedFile = null;
+
+function openSellerModal(sellerId = null) {
+  sellerSelectedFile = null;
+  document.getElementById("seller-form").reset();
+  
+  const previewImg = document.getElementById("seller-preview-img");
+  const placeholder = document.getElementById("seller-preview-placeholder");
+  const idInput = document.getElementById("seller-id");
+
+  previewImg.classList.add("hidden");
+  previewImg.src = "";
+  placeholder.classList.remove("hidden");
+  idInput.removeAttribute("disabled");
+  
+  if (sellerId) {
+    document.getElementById("seller-modal-title").innerText = "Editar Vendedor";
+    document.getElementById("seller-is-edit").value = "true";
+    
+    const seller = allSellers.find(s => s.id === sellerId);
+    if (seller) {
+      idInput.value = seller.id;
+      idInput.setAttribute("disabled", "true"); // No editar ID ya creado
+      document.getElementById("seller-name").value = seller.nombre;
+      document.getElementById("seller-phone").value = seller.telefono;
+      document.getElementById("seller-avatar-url").value = seller.miniatura;
+      
+      if (seller.miniatura) {
+        previewImg.src = seller.miniatura;
+        previewImg.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+      }
+    }
+  } else {
+    document.getElementById("seller-modal-title").innerText = "Agregar Vendedor";
+    document.getElementById("seller-is-edit").value = "false";
+  }
+  
+  sellerModal.classList.remove("hidden");
+}
+
+function closeSellerModal() {
+  sellerModal.classList.add("hidden");
+}
+
+document.getElementById("add-seller-btn").addEventListener("click", () => openSellerModal());
+document.getElementById("close-seller-modal-btn").addEventListener("click", closeSellerModal);
+document.getElementById("cancel-seller-modal-btn").addEventListener("click", closeSellerModal);
+
+// Selección de imagen en Vendedores
+document.getElementById("seller-image-file-input").addEventListener("change", (e) => {
+  if (e.target.files.length > 0) {
+    sellerSelectedFile = e.target.files[0];
+    showLocalPreview(sellerSelectedFile, "seller-preview-img", "seller-preview-placeholder");
+  }
+});
+
+// Guardar Vendedor
+document.getElementById("seller-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const isEdit = document.getElementById("seller-is-edit").value === "true";
+  const id = document.getElementById("seller-id").value.trim().toLowerCase().replace(/\s+/g, '_');
+  const name = document.getElementById("seller-name").value.trim();
+  const phone = document.getElementById("seller-phone").value.trim();
+  const urlInput = document.getElementById("seller-avatar-url").value.trim();
+
+  if (!isEdit && allSellers.some(s => s.id === id)) {
+    alert("Ya existe un vendedor con este ID único. Introduce otro.");
+    return;
+  }
+
+  let finalImageUrl = urlInput || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
+
+  if (sellerSelectedFile) {
+    if (useMock) {
+      finalImageUrl = await convertFileToBase64(sellerSelectedFile);
+    } else {
+      try {
+        const storageSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js");
+        const uniqueName = Date.now() + "_" + sellerSelectedFile.name;
+        const imgRef = storageSdk.ref(storage, "vendedores/" + uniqueName);
+        const uploadResult = await storageSdk.uploadBytes(imgRef, sellerSelectedFile);
+        finalImageUrl = await storageSdk.getDownloadURL(uploadResult.ref);
+      } catch (err) {
+        console.error("Error al subir foto de vendedor:", err);
+      }
+    }
+  }
+
+  const newSellerData = {
+    id: id,
+    nombre: name,
+    telefono: phone,
+    miniatura: finalImageUrl
+  };
+
+  if (useMock) {
+    let sellers = JSON.parse(localStorage.getItem("admin_vendedores") || "[]");
+    if (isEdit) {
+      sellers = sellers.map(s => s.id === id ? newSellerData : s);
+    } else {
+      sellers.push(newSellerData);
+    }
+    localStorage.setItem("admin_vendedores", JSON.stringify(sellers));
+  } else {
+    try {
+      const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const docRef = firestoreSdk.doc(db, "vendedores", id);
+      await firestoreSdk.setDoc(docRef, {
+        nombre: name,
+        telefono: phone,
+        miniatura: finalImageUrl
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Error al guardar vendedor en Firestore.");
+      return;
+    }
+  }
+
+  closeSellerModal();
+  loadInitialData();
+});
+
+// Borrar Vendedor
+async function deleteSeller(sellerId) {
+  if (allSellers.length <= 1) {
+    alert("Debe haber por lo menos un vendedor en la base de datos para levantar pedidos.");
+    return;
+  }
+  
+  if (!confirm(`¿Estás seguro de que deseas eliminar al vendedor "${sellerId}"?`)) return;
+
+  if (useMock) {
+    let sellers = JSON.parse(localStorage.getItem("admin_vendedores") || "[]");
+    sellers = sellers.filter(s => s.id !== sellerId);
+    localStorage.setItem("admin_vendedores", JSON.stringify(sellers));
+  } else {
+    try {
+      const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+      const docRef = firestoreSdk.doc(db, "vendedores", sellerId);
+      await firestoreSdk.deleteDoc(docRef);
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar vendedor en Firestore.");
+      return;
+    }
+  }
+  loadInitialData();
+}
+
 
 // Inicialización del script
 window.addEventListener("DOMContentLoaded", () => {
