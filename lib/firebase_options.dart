@@ -30,29 +30,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAE5ad-5hGxRcHAUROLX0GWw5qwPFpWueY',
-    appId: '1:181111764963:web:3921abbf3ba701617052d6',
-    messagingSenderId: '181111764963',
-    projectId: 'app-pedidos-component',
-    authDomain: 'app-pedidos-component.firebaseapp.com',
-    storageBucket: 'app-pedidos-component.firebasestorage.app',
-    measurementId: 'G-4CE8Z970L3',
+    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
+    appId: '1:308853230269:web:0a8905528009fc15aa85d4',
+    messagingSenderId: '308853230269',
+    projectId: 'app-pedidos-component-63dcf',
+    authDomain: 'app-pedidos-component-63dcf.firebaseapp.com',
+    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
+    measurementId: 'G-SFC61VSFJ9',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAE5ad-5hGxRcHAUROLX0GWw5qwPFpWueY',
-    appId: '1:181111764963:android:3921abbf3ba701617052d6', // Generado usando la misma clave de la web
-    messagingSenderId: '181111764963',
-    projectId: 'app-pedidos-component',
-    storageBucket: 'app-pedidos-component.firebasestorage.app',
+    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
+    appId: '1:308853230269:android:0a8905528009fc15aa85d4', // Generado usando la misma clave de la web
+    messagingSenderId: '308853230269',
+    projectId: 'app-pedidos-component-63dcf',
+    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAE5ad-5hGxRcHAUROLX0GWw5qwPFpWueY',
-    appId: '1:181111764963:ios:3921abbf3ba701617052d6',
-    messagingSenderId: '181111764963',
-    projectId: 'app-pedidos-component',
-    storageBucket: 'app-pedidos-component.firebasestorage.app',
+    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
+    appId: '1:308853230269:ios:0a8905528009fc15aa85d4',
+    messagingSenderId: '308853230269',
+    projectId: 'app-pedidos-component-63dcf',
+    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
     iosBundleId: 'com.mycompany.componentpedidos',
   );
 }

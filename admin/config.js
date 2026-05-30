@@ -3,13 +3,13 @@
 // Puedes encontrarlas en la consola de Firebase > Configuración del Proyecto > General > Tus Apps.
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyAE5ad-5hGxRcHAUROLX0GWw5qwPFpWueY",
-  authDomain: "app-pedidos-component.firebaseapp.com",
-  projectId: "app-pedidos-component",
-  storageBucket: "app-pedidos-component.firebasestorage.app",
-  messagingSenderId: "181111764963",
-  appId: "1:181111764963:web:3921abbf3ba701617052d6",
-  measurementId: "G-4CE8Z970L3"
+  apiKey: "AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA",
+  authDomain: "app-pedidos-component-63dcf.firebaseapp.com",
+  projectId: "app-pedidos-component-63dcf",
+  storageBucket: "app-pedidos-component-63dcf.firebasestorage.app",
+  messagingSenderId: "308853230269",
+  appId: "1:308853230269:web:0a8905528009fc15aa85d4",
+  measurementId: "G-SFC61VSFJ9"
 };
 
 // Determina si debemos ejecutar el panel en modo offline simulado (Mock Mode)
