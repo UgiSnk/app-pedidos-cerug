@@ -2,7 +2,7 @@
 // ⚙️ Portal Administrador - Lógica de Control y Conexión a Firebase/Mock
 // ==========================================================================
 
-import { firebaseConfig, isMockMode } from "./config.js";
+import { firebaseConfig, isMockMode } from "./config.js?v=1.1";
 
 // SDKs de Firebase cargados dinámicamente desde CDN
 let db, storage, auth;
