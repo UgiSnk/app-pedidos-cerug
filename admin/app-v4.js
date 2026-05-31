@@ -170,6 +170,11 @@ async function initDatabase() {
     checkAuthState();
   } else {
     try {
+      console.log("DIAGNOSTIC: LOBBYING SCRIPT TAGS IN BROWSER:");
+      const scripts = Array.from(document.querySelectorAll('script'));
+      scripts.forEach((s, idx) => {
+        console.log(`SCRIPT ${idx}: src=`, s.src, "type=", s.type, "text length=", s.textContent ? s.textContent.length : 0);
+      });
       console.log("🔗 Conectando al SDK de Firebase (Modular)...");
       
       const app = initializeApp(firebaseConfig);
