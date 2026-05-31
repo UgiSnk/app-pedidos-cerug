@@ -2,7 +2,7 @@
 // ⚙️ Portal Administrador - Lógica de Control y Conexión a Firebase/Mock
 // ==========================================================================
 
-import { firebaseConfig, isMockMode } from "./config.js?v=1.5";
+import { firebaseConfig, isMockMode } from "./config.js?v=1.6";
 import { initializeApp as fbInitializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore as fbGetFirestore, collection as fbCollection, getDocs as fbGetDocs, doc as fbDoc, setDoc as fbSetDoc, deleteDoc as fbDeleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getStorage as fbGetStorage, ref as fbRef, uploadBytes as fbUploadBytes, getDownloadURL as fbGetDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
@@ -355,12 +355,20 @@ async function loadInitialData() {
 
 // Pintar estadísticas en dashboard
 function renderDashboardStats() {
-  document.getElementById("stat-products-count").innerText = allProducts.length;
-  document.getElementById("stat-categories-count").innerText = allCategories.length;
-  document.getElementById("stat-sellers-count").innerText = allSellers.length;
+  const productsCountEl = document.getElementById("stat-products-count");
+  if (productsCountEl) productsCountEl.innerText = allProducts.length;
+
+  const categoriesCountEl = document.getElementById("stat-categories-count");
+  if (categoriesCountEl) categoriesCountEl.innerText = allCategories.length;
+
+  const sellersCountEl = document.getElementById("stat-sellers-count");
+  if (sellersCountEl) sellersCountEl.innerText = allSellers.length;
   
-  const primeSeller = allSellers[0];
-  document.getElementById("stat-vendedor-phone").innerText = primeSeller ? `${primeSeller.nombre} (${primeSeller.telefono})` : "Sin registrar";
+  const vendedorEl = document.getElementById("stat-vendedor-phone");
+  if (vendedorEl) {
+    const primeSeller = allSellers[0];
+    vendedorEl.innerText = primeSeller ? `${primeSeller.nombre} (${primeSeller.telefono})` : "Sin registrar";
+  }
 }
 
 // Rellenar dinámicamente los selects de categorías en la UI
