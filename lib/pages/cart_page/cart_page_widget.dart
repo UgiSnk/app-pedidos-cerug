@@ -211,6 +211,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                       ContadorItemWidget(
                                         key: ValueKey(itemCarritoItem.productoRef?.path),
                                         productoActual: itemCarritoItem.productoRef,
+                                        precio: itemCarritoItem.precio,
+                                        foto: itemCarritoItem.imagen,
                                       ),
                                     ],
                                   ),

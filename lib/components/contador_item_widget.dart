@@ -15,9 +15,15 @@ class ContadorItemWidget extends StatefulWidget {
   const ContadorItemWidget({
     super.key,
     required this.productoActual,
+    this.precio,
+    this.nombre,
+    this.foto,
   });
 
   final DocumentReference? productoActual;
+  final double? precio;
+  final String? nombre;
+  final String? foto;
 
   @override
   State<ContadorItemWidget> createState() => _ContadorItemWidgetState();
@@ -101,14 +107,16 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
               FFAppState().carrito.toList(), widget.productoActual!);
           
           final prod = getProductByRef(widget.productoActual!);
+          final double precio = widget.precio ?? prod?.precio ?? 0.0;
+          final String foto = widget.foto ?? prod?.foto ?? '';
 
           if (index == -1) {
             if (count > 0) {
               FFAppState().addToCarrito(ItemCarritoStruct(
                 productoRef: widget.productoActual,
                 cantidad: count,
-                precio: prod?.precio ?? 0.0,
-                imagen: prod?.foto ?? '',
+                precio: precio,
+                imagen: foto,
               ));
               safeSetState(() {});
             }
@@ -118,10 +126,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
                 index,
                 (e) {
                   e.cantidad = count;
-                  if (prod != null) {
-                    e.precio = prod.precio;
-                    e.imagen = prod.foto;
-                  }
+                  e.precio = precio;
+                  e.imagen = foto;
                 },
               );
               safeSetState(() {});

@@ -187,6 +187,8 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget> {
                 updateCallback: () => safeSetState(() {}),
                 child: ContadorItemWidget(
                   productoActual: widget.productoDoc!.reference,
+                  precio: widget.productoDoc!.precio,
+                  foto: widget.productoDoc!.foto,
                 ),
               ),
             ],

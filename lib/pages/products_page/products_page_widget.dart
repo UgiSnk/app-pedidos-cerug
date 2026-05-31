@@ -245,6 +245,8 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                                       child: ContadorItemWidget(
                                         key: Key('Keyfm9_${listViewProductosRecord.reference.id}'),
                                         productoActual: listViewProductosRecord.reference,
+                                        precio: listViewProductosRecord.precio,
+                                        foto: listViewProductosRecord.foto,
                                       ),
                                     ),
                                   ),
