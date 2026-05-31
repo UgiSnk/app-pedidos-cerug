@@ -15,7 +15,7 @@ function initializeApp(config) {
 }
 
 function getFirestore(app) {
-  return firebase.firestore(app);
+  return firebase.firestore();
 }
 
 function collection(db, path) {
