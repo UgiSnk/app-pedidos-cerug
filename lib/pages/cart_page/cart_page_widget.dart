@@ -338,8 +338,10 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                               subtotal,
                                             );
 
-                                            final telefonoVendedor = vendedor?.telefono ?? '54911XXXXXXXX';
-                                            final waUrl = 'https://wa.me/$telefonoVendedor?text=$message';
+                                            final rawPhone = vendedor?.telefono ?? '5491173564074';
+                                            final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
+                                            final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
+                                            final waUrl = 'https://wa.me/$telefonoDestino?text=$message';
 
                                             await launchURL(waUrl);
                                           }

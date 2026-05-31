@@ -78,8 +78,21 @@ String formatNumber(
   if (value == null) return '';
   final currencyStr = currency ?? '';
   
-  final formatter = NumberFormat.decimalPattern('es_AR');
-  final formattedNumber = formatter.format(value);
+  String formattedNumber;
+  try {
+    final formatter = NumberFormat.decimalPattern('es_AR');
+    formattedNumber = formatter.format(value);
+  } catch (e) {
+    debugPrint('Error formatting number with es_AR: $e');
+    try {
+      final formatter = NumberFormat.decimalPattern();
+      formattedNumber = formatter.format(value);
+    } catch (_) {
+      final str = value.toStringAsFixed(0);
+      final reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+      formattedNumber = str.replaceAllMapped(reg, (Match m) => '${m[1]}.');
+    }
+  }
   
   if (currencyStr.isNotEmpty) {
     return '$currencyStr$formattedNumber';
