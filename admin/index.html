@@ -3,6 +3,19 @@
 <head>
   <!-- Global Error Handler for Debugging -->
   <script>
+    // Desregistrar todos los Service Workers para evitar que cacheen scripts viejos
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.unregister().then(function(unregistered) {
+            if (unregistered) {
+              console.log('Service Worker desregistrado con éxito.');
+            }
+          });
+        }
+      });
+    }
+
     window.addEventListener("error", function(e) {
       console.error("Global Error Caught:", e);
       const errorDiv = document.createElement("div");
@@ -713,6 +726,6 @@
   </div>
 
   <!-- Inyección de Lógica -->
-  <script type="module" src="app-v4.js?v=6.9"></script>
+  <script type="module" src="app-v4.js?v=7.0"></script>
 </body>
 </html>

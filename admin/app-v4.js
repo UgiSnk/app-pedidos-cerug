@@ -2,7 +2,7 @@
 // ⚙️ Portal Administrador - Lógica de Control y Conexión a Firebase/Mock
 // ==========================================================================
 
-import { firebaseConfig, isMockMode } from "./config.js?v=1.1";
+import { firebaseConfig, isMockMode } from "./config.js?v=1.5";
 import { initializeApp as fbInitializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore as fbGetFirestore, collection as fbCollection, getDocs as fbGetDocs, doc as fbDoc, setDoc as fbSetDoc, deleteDoc as fbDeleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getStorage as fbGetStorage, ref as fbRef, uploadBytes as fbUploadBytes, getDownloadURL as fbGetDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
