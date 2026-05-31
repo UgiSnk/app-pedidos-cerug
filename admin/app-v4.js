@@ -64,15 +64,15 @@ function getAuth(app) {
 }
 
 function signInWithEmailAndPassword(auth, email, pass) {
-  return auth.signInWithEmailAndPassword(email, pass);
+  return fbSignInWithEmailAndPassword(auth, email, pass);
 }
 
 function signOut(auth) {
-  return auth.signOut();
+  return fbSignOut(auth);
 }
 
 function onAuthStateChanged(auth, callback) {
-  return auth.onAuthStateChanged(callback);
+  return fbOnAuthStateChanged(auth, callback);
 }
 
 let db, storage, auth, appInstance;
