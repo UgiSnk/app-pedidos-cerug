@@ -5,6 +5,8 @@
 import { firebaseConfig, isMockMode } from "./config.js?v=1.1";
 
 const firebase = window.firebase;
+console.log("DIAGNOSTIC: window.firebase =", firebase);
+console.log("DIAGNOSTIC: firebase.SDK_VERSION =", firebase ? firebase.SDK_VERSION : "null");
 
 // Envolturas de compatibilidad que exponen la API Modular utilizando el SDK Compat estable por debajo.
 // Esto soluciona los errores de conversión de tipos e incompatibilidades de CDNs en el navegador de manera definitiva.
