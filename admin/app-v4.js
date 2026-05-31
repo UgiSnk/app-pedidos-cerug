@@ -4,12 +4,6 @@
 
 import { firebaseConfig, isMockMode } from "./config.js?v=1.1";
 
-// SDKs de Firebase cargados estáticamente desde CDN Oficial (v8)
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js";
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js";
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js";
-
 const firebase = window.firebase;
 
 // Envolturas de compatibilidad que exponen la API Modular utilizando el SDK Compat estable por debajo.
