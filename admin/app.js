@@ -916,6 +916,317 @@ async function deleteSeller(sellerId) {
 }
 
 
+// ==========================================
+// 📥 CARGA MASIVA (CSV IMPORT)
+// ==========================================
+const bulkModal = document.getElementById("bulk-import-modal");
+const csvFileInput = document.getElementById("csv-file-input");
+const csvDropZone = document.getElementById("csv-drop-zone");
+const startImportBtn = document.getElementById("start-bulk-import-btn");
+const cancelImportBtn = document.getElementById("cancel-bulk-modal-btn");
+const closeImportBtn = document.getElementById("close-bulk-modal-btn");
+const downloadTemplateBtn = document.getElementById("download-template-btn");
+
+let parsedCsvProducts = [];
+
+function openBulkModal() {
+  parsedCsvProducts = [];
+  document.getElementById("csv-preview-container").classList.add("hidden");
+  document.getElementById("import-progress-container").classList.add("hidden");
+  document.getElementById("csv-preview-body").innerHTML = "";
+  
+  // Resetear botón de inicio
+  startImportBtn.setAttribute("disabled", "true");
+  startImportBtn.className = "px-5 py-2.5 bg-emerald-500/40 text-white/50 font-bold text-xs rounded-xl cursor-not-allowed transition-all flex items-center gap-1";
+  
+  csvFileInput.value = "";
+  bulkModal.classList.remove("hidden");
+}
+
+function closeBulkModal() {
+  bulkModal.classList.add("hidden");
+}
+
+document.getElementById("bulk-upload-btn").addEventListener("click", openBulkModal);
+closeImportBtn.addEventListener("click", closeBulkModal);
+cancelImportBtn.addEventListener("click", closeBulkModal);
+
+// Descargar plantilla CSV modelo
+downloadTemplateBtn.addEventListener("click", () => {
+  const csvContent = "\uFEFFnombre,precio,categoria_id,descripcion,foto_url\n" +
+    "\"Vela Aromatica Flor de Loto\",18500,\"Velas\",\"Vela de soja premium perfumada en envase de vidrio decorado\",\"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&q=80&w=600\"\n" +
+    "\"Nordico Gris\",29000,\"Vidrios\",\"Florero de vidrio con textura estilo nordico de 20cm de alto\",\"https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&q=80&w=600\"\n" +
+    "\"Vela XXL Blanco\",28000,\"Velas\",\"Medida 15x17 vela gigante aromatica\",\"https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8\"\n";
+  
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "plantilla_productos_component.csv");
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
+// Drag & Drop
+csvDropZone.addEventListener("click", () => csvFileInput.click());
+
+csvDropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  csvDropZone.classList.add("border-emerald-500", "bg-emerald-500/5");
+});
+
+csvDropZone.addEventListener("dragleave", () => {
+  csvDropZone.classList.remove("border-emerald-500", "bg-emerald-500/5");
+});
+
+csvDropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  csvDropZone.classList.remove("border-emerald-500", "bg-emerald-500/5");
+  if (e.dataTransfer.files.length > 0) {
+    handleCsvFile(e.dataTransfer.files[0]);
+  }
+});
+
+csvFileInput.addEventListener("change", (e) => {
+  if (e.target.files.length > 0) {
+    handleCsvFile(e.target.files[0]);
+  }
+});
+
+// Procesar el archivo CSV seleccionado
+function handleCsvFile(file) {
+  if (!file.name.endsWith(".csv")) {
+    alert("Por favor, selecciona un archivo en formato .csv");
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    processCsvText(text);
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+// Parser de CSV simple que soporta comas y punto y comas
+function parseCSV(text) {
+  const result = [];
+  const lines = text.split(/\r?\n/);
+  
+  if (lines.length === 0) return { data: result, separator: ',' };
+  
+  const header = lines[0];
+  const separator = header.includes(';') ? ';' : ',';
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    const row = [];
+    let insideQuote = false;
+    let entry = '';
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        insideQuote = !insideQuote;
+      } else if (char === separator && !insideQuote) {
+        row.push(entry.replace(/^"|"$/g, '').trim());
+        entry = '';
+      } else {
+        entry += char;
+      }
+    }
+    row.push(entry.replace(/^"|"$/g, '').trim());
+    result.push(row);
+  }
+  return { data: result, separator };
+}
+
+function processCsvText(text) {
+  const { data } = parseCSV(text);
+  parsedCsvProducts = [];
+  
+  const previewBody = document.getElementById("csv-preview-body");
+  previewBody.innerHTML = "";
+  
+  let validRowsCount = 0;
+  
+  data.forEach((row) => {
+    // Si la fila está incompleta, la saltamos
+    if (row.length < 2 || !row[0]) return;
+    
+    const nombre = row[0] || "";
+    // Limpiar precio de signos monetarios o puntos de miles antes de parsear
+    let rawPrice = row[1] ? row[1].toString().replace(/[$.]/g, '').replace(/,/g, '.') : "0";
+    const precio = parseFloat(rawPrice) || 0;
+    const categoria = row[2] || "General";
+    const descripcion = row[3] || "";
+    const foto = row[4] || "";
+    
+    const product = {
+      nombre,
+      precio,
+      categoria_id: categoria,
+      descripcion,
+      foto
+    };
+    
+    parsedCsvProducts.push(product);
+    validRowsCount++;
+    
+    // Solo mostrar las primeras 5 filas en la vista previa
+    if (validRowsCount <= 5) {
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-white/5 transition-colors border-b border-white/5";
+      tr.innerHTML = `
+        <td class="py-2.5 px-4 font-semibold text-white truncate max-w-[150px]">${nombre}</td>
+        <td class="py-2.5 px-4 font-mono text-emerald-400 font-bold">$${precio.toLocaleString('es-AR')}</td>
+        <td class="py-2.5 px-4 text-slate-300 font-medium">${categoria}</td>
+        <td class="py-2.5 px-4 truncate max-w-[180px] text-slate-400">${descripcion || '-'}</td>
+        <td class="py-2.5 px-4 truncate max-w-[150px] text-slate-500 font-mono">${foto ? 'Sí' : 'No (Default)'}</td>
+      `;
+      previewBody.appendChild(tr);
+    }
+  });
+  
+  if (parsedCsvProducts.length === 0) {
+    alert("No se encontraron productos válidos en el archivo CSV. Verifica el formato.");
+    return;
+  }
+  
+  // Mostrar contenedor de previsualización
+  document.getElementById("csv-total-count").innerText = parsedCsvProducts.length;
+  document.getElementById("csv-preview-container").classList.remove("hidden");
+  
+  // Habilitar botón de inicio
+  startImportBtn.removeAttribute("disabled");
+  startImportBtn.className = "px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-1 cursor-pointer";
+}
+
+// Iniciar Carga Masiva a la Base de Datos
+startImportBtn.addEventListener("click", async () => {
+  if (parsedCsvProducts.length === 0) return;
+  
+  // Bloquear botones e iniciar UI de progreso
+  startImportBtn.setAttribute("disabled", "true");
+  startImportBtn.className = "px-5 py-2.5 bg-emerald-500/30 text-white/40 font-bold text-xs rounded-xl flex items-center gap-1 cursor-not-allowed";
+  cancelImportBtn.setAttribute("disabled", "true");
+  cancelImportBtn.classList.add("opacity-50", "cursor-not-allowed");
+  closeImportBtn.setAttribute("disabled", "true");
+  closeImportBtn.classList.add("opacity-50", "cursor-not-allowed");
+  
+  const progressContainer = document.getElementById("import-progress-container");
+  const progressBar = document.getElementById("import-progress-bar");
+  const progressStatus = document.getElementById("import-progress-status");
+  const progressPercent = document.getElementById("import-progress-percent");
+  
+  progressContainer.classList.remove("hidden");
+  
+  let successCount = 0;
+  let categoriesCreated = 0;
+  const total = parsedCsvProducts.length;
+  
+  for (let i = 0; i < total; i++) {
+    const prod = parsedCsvProducts[i];
+    
+    // Actualizar barra de progreso
+    const percent = Math.round(((i) / total) * 100);
+    progressBar.style.width = `${percent}%`;
+    progressPercent.innerText = `${percent}%`;
+    progressStatus.innerText = `Subiendo: ${prod.nombre} (${i + 1}/${total})`;
+    
+    const catId = prod.categoria_id.trim();
+    
+    // 1. Crear categoría automáticamente si no existe
+    if (catId && !allCategories.some(c => c.id.toLowerCase() === catId.toLowerCase())) {
+      const newCat = {
+        id: catId,
+        nombre: catId,
+        imagen: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=80&w=300"
+      };
+      
+      if (useMock) {
+        let localCats = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
+        localCats.push(newCat);
+        localStorage.setItem("admin_categorias", JSON.stringify(localCats));
+      } else {
+        try {
+          const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+          const catRef = firestoreSdk.doc(db, "categorias", catId);
+          await firestoreSdk.setDoc(catRef, {
+            nombre: catId,
+            imagen: newCat.imagen
+          });
+        } catch (err) {
+          console.error("Error al crear categoría automática:", err);
+        }
+      }
+      allCategories.push(newCat);
+      categoriesCreated++;
+    }
+    
+    // 2. Crear Producto
+    const generatedId = prod.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + "_" + Date.now();
+    const finalImageUrl = prod.foto || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
+    
+    const productData = {
+      id: generatedId,
+      nombre: prod.nombre,
+      precio: prod.precio,
+      foto: finalImageUrl,
+      categoria_id: catId,
+      descripcion: prod.descripcion
+    };
+    
+    if (useMock) {
+      let localProducts = JSON.parse(localStorage.getItem("admin_productos") || "[]");
+      localProducts.push(productData);
+      localStorage.setItem("admin_productos", JSON.stringify(localProducts));
+      successCount++;
+    } else {
+      try {
+        const firestoreSdk = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+        const docRef = firestoreSdk.doc(db, "productos", generatedId);
+        await firestoreSdk.setDoc(docRef, {
+          nombre: prod.nombre,
+          precio: prod.precio,
+          foto: finalImageUrl,
+          categoria_id: catId,
+          descripcion: prod.descripcion
+        });
+        successCount++;
+      } catch (err) {
+        console.error("Error al subir producto individual:", err);
+      }
+    }
+    
+    // Pequeño delay de 50ms para evitar saturar la base de datos y hacer visible la animación de carga
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+  
+  // Completar barra al 100%
+  progressBar.style.width = "100%";
+  progressPercent.innerText = "100%";
+  progressStatus.innerText = "¡Carga finalizada con éxito!";
+  
+  await new Promise(resolve => setTimeout(resolve, 600));
+  
+  alert(`Carga Masiva Completada:\n- Productos importados: ${successCount} de ${total}.\n- Categorías nuevas creadas: ${categoriesCreated}.`);
+  
+  // Desbloquear controles
+  startImportBtn.removeAttribute("disabled");
+  cancelImportBtn.removeAttribute("disabled");
+  cancelImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
+  closeImportBtn.removeAttribute("disabled");
+  closeImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
+  
+  closeBulkModal();
+  loadInitialData();
+});
+
 // Inicialización del script
 window.addEventListener("DOMContentLoaded", () => {
   initDatabase();
