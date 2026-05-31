@@ -1,6 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Global Error Handler for Debugging -->
+  <script>
+    window.addEventListener("error", function(e) {
+      console.error("Global Error Caught:", e);
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "fixed top-4 left-4 right-4 z-[9999] p-4 bg-red-600 text-white rounded-xl shadow-2xl font-mono text-xs flex flex-col gap-2";
+      errorDiv.innerHTML = `
+        <div class="flex justify-between items-center font-bold">
+          <span>🚨 Error de Ejecución Detectado</span>
+          <button onclick="this.parentElement.parentElement.remove()" class="px-2 py-1 bg-white/20 rounded">Cerrar</button>
+        </div>
+        <div><strong>Mensaje:</strong> ${e.message}</div>
+        <div><strong>Archivo:</strong> ${e.filename}</div>
+        <div><strong>Línea/Col:</strong> ${e.lineno}:${e.colno}</div>
+      `;
+      document.body.appendChild(errorDiv);
+    });
+    window.addEventListener("unhandledrejection", function(e) {
+      console.error("Global Rejection Caught:", e);
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "fixed top-4 left-4 right-4 z-[9999] p-4 bg-red-600 text-white rounded-xl shadow-2xl font-mono text-xs flex flex-col gap-2";
+      errorDiv.innerHTML = `
+        <div class="flex justify-between items-center font-bold">
+          <span>🚨 Promesa Rechazada (Unhandled Rejection)</span>
+          <button onclick="this.parentElement.parentElement.remove()" class="px-2 py-1 bg-white/20 rounded">Cerrar</button>
+        </div>
+        <div><strong>Razón:</strong> ${e.reason}</div>
+      `;
+      document.body.appendChild(errorDiv);
+    });
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Component New House</title>
@@ -28,7 +59,8 @@
   </script>
   
   <!-- Estilos Premium Personalizados -->
-  <link rel="stylesheet" href="styles.css?v=1.1">
+  <link rel="stylesheet" href="styles.css?v=1.2">
+
 </head>
 <body class="relative min-h-screen flex flex-col justify-between overflow-x-hidden">
   
@@ -156,6 +188,15 @@
       <!-- SECCIONES DE CONTENIDO -->
       <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
         
+        <!-- Alerta de Error de Base de Datos -->
+        <div id="db-error-alert" class="hidden p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3 animate-fade-in">
+          <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <div>
+            <h5 class="font-bold">Error de Firestore / Firebase</h5>
+            <p id="db-error-message" class="text-xs text-slate-400 mt-1">No se pudieron cargar los datos desde Firestore. Por favor verifica las reglas de seguridad (Security Rules) en la consola de Firebase o que el usuario tenga los permisos necesarios.</p>
+          </div>
+        </div>
+
         <!-- ==============================
              📊 SECTION A: DASHBOARD
              ============================== -->
@@ -433,6 +474,9 @@
   <!-- ==========================================
        🖼️ MODAL: CREAR / EDITAR CATEGORÍA
        ========================================== -->
+  <!-- ==========================================
+       🖼️ MODAL: CREAR / EDITAR CATEGORÍA
+       ========================================== -->
   <div id="category-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
     <div class="glass-container w-full max-w-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden animate-slide-up flex flex-col">
       <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
@@ -443,6 +487,9 @@
       </div>
 
       <form id="category-form" class="p-6 space-y-4">
+        <input type="hidden" id="category-is-edit" value="false">
+        <input type="hidden" id="category-modal-id">
+        
         <div>
           <label class="block text-slate-300 text-xs font-semibold mb-1" for="category-name">Nombre de la Categoría</label>
           <input id="category-name" type="text" placeholder="Ej: Adornos" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm" required>
@@ -479,7 +526,7 @@
           
           <button type="submit" class="btn-premium px-5 py-2.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-1">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <span>Crear Categoría</span>
+            <span id="category-submit-text">Crear Categoría</span>
           </button>
         </div>
       </form>
@@ -665,6 +712,6 @@
   </div>
 
   <!-- Inyección de Lógica -->
-  <script type="module" src="app.js?v=1.1"></script>
+  <script type="module" src="app-v4.js?v=6.3"></script>
 </body>
 </html>
