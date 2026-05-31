@@ -1,4 +1,5 @@
 @echo off
+cd /d "%~dp0"
 title Servidor Admin - Component New House
 echo ==========================================================
 echo 🚀 Iniciando servidor local para el Portal Administrador...
