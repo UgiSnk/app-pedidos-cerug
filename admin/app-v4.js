@@ -3,66 +3,64 @@
 // ==========================================================================
 
 import { firebaseConfig, isMockMode } from "./config.js?v=1.1";
+import { initializeApp as fbInitializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore as fbGetFirestore, collection as fbCollection, getDocs as fbGetDocs, doc as fbDoc, setDoc as fbSetDoc, deleteDoc as fbDeleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getStorage as fbGetStorage, ref as fbRef, uploadBytes as fbUploadBytes, getDownloadURL as fbGetDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { getAuth as fbGetAuth, signInWithEmailAndPassword as fbSignInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged as fbOnAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-const firebase = window.firebase;
-console.log("DIAGNOSTIC: window.firebase =", firebase);
-console.log("DIAGNOSTIC: firebase.SDK_VERSION =", firebase ? firebase.SDK_VERSION : "null");
+const firebase = { SDK_VERSION: "10.8.0-modular" };
+console.log("DIAGNOSTIC: Using Pure Modular SDK 10.8.0");
 
-// Envolturas de compatibilidad que exponen la API Modular utilizando el SDK Compat estable por debajo.
-// Esto soluciona los errores de conversión de tipos e incompatibilidades de CDNs en el navegador de manera definitiva.
 function initializeApp(config) {
-  return firebase.initializeApp(config);
+  return fbInitializeApp(config);
 }
 
 function getFirestore(app) {
-  return firebase.firestore();
+  return fbGetFirestore(app);
 }
 
 function collection(db, path) {
-  return db.collection(path);
+  return fbCollection(db, path);
 }
 
 function getDocs(collRef) {
-  return collRef.get();
+  return fbGetDocs(collRef);
 }
 
 function doc(dbOrColl, pathOrId, id) {
   if (id) {
-    if (typeof dbOrColl.collection === "function") {
-      return dbOrColl.collection(pathOrId).doc(id);
-    }
-    return dbOrColl.doc(id);
+    return fbDoc(dbOrColl, pathOrId, id);
   }
-  return dbOrColl.doc(pathOrId);
+  return fbDoc(dbOrColl, pathOrId);
 }
 
 function setDoc(docRef, data) {
-  return docRef.set(data);
+  return fbSetDoc(docRef, data);
 }
 
 function deleteDoc(docRef) {
-  return docRef.delete();
+  return fbDeleteDoc(docRef);
 }
 
 function getStorage(app) {
-  return firebase.storage(app);
+  return fbGetStorage(app);
 }
 
 function ref(storage, path) {
-  return storage.ref(path);
+  return fbRef(storage, path);
 }
 
 async function uploadBytes(storageRef, file) {
-  const uploadTask = await storageRef.put(file);
-  return uploadTask.ref;
+  const uploadResult = await fbUploadBytes(storageRef, file);
+  return uploadResult;
 }
 
 function getDownloadURL(ref) {
-  return ref.getDownloadURL();
+  return fbGetDownloadURL(ref);
 }
 
 function getAuth(app) {
-  return firebase.auth(app);
+  return fbGetAuth(app);
 }
 
 function signInWithEmailAndPassword(auth, email, pass) {
