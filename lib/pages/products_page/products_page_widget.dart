@@ -247,6 +247,8 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                                         productoActual: listViewProductosRecord.reference,
                                         precio: listViewProductosRecord.precio,
                                         foto: listViewProductosRecord.foto,
+                                        nombre: listViewProductosRecord.nombre,
+                                        codigo: listViewProductosRecord.codigo,
                                       ),
                                     ),
                                   ),
@@ -256,25 +258,26 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                                         FFAppState().carrito.toList(),
                                         listViewProductosRecord.reference,
                                       );
-                                      if (cartIndex != -1) {
-                                        return FlutterFlowIconButton(
-                                          borderColor: Colors.transparent,
-                                          borderRadius: 8,
-                                          buttonSize: 40,
-                                          fillColor: Colors.transparent,
-                                          icon: Icon(
-                                            Icons.delete_outline_rounded,
-                                            color: FlutterFlowTheme.of(context).error,
-                                            size: 20,
-                                          ),
-                                          onPressed: () async {
+                                      return FlutterFlowIconButton(
+                                        borderColor: Colors.transparent,
+                                        borderRadius: 8,
+                                        buttonSize: 40,
+                                        fillColor: Colors.transparent,
+                                        icon: Icon(
+                                          Icons.delete_outline_rounded,
+                                          color: cartIndex != -1
+                                              ? FlutterFlowTheme.of(context).error
+                                              : FlutterFlowTheme.of(context).secondaryText.withOpacity(0.3),
+                                          size: 20,
+                                        ),
+                                        onPressed: () {
+                                          if (cartIndex != -1) {
                                             final itemToRemove = FFAppState().carrito.toList()[cartIndex];
                                             FFAppState().removeFromCarrito(itemToRemove);
                                             safeSetState(() {});
-                                          },
-                                        );
-                                      }
-                                      return const SizedBox.shrink();
+                                          }
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

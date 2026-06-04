@@ -18,12 +18,14 @@ class ContadorItemWidget extends StatefulWidget {
     this.precio,
     this.nombre,
     this.foto,
+    this.codigo,
   });
 
   final DocumentReference? productoActual;
   final double? precio;
   final String? nombre;
   final String? foto;
+  final String? codigo;
 
   @override
   State<ContadorItemWidget> createState() => _ContadorItemWidgetState();
@@ -109,6 +111,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
           final prod = getProductByRef(widget.productoActual!);
           final double precio = widget.precio ?? prod?.precio ?? 0.0;
           final String foto = widget.foto ?? prod?.foto ?? '';
+          final String nombre = widget.nombre ?? prod?.nombre ?? 'Producto';
+          final String codigo = widget.codigo ?? prod?.codigo ?? '';
 
           if (index == -1) {
             if (count > 0) {
@@ -117,6 +121,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
                 cantidad: count,
                 precio: precio,
                 imagen: foto,
+                nombre: nombre,
+                codigo: codigo,
               ));
               safeSetState(() {});
             }
@@ -128,6 +134,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
                   e.cantidad = count;
                   e.precio = precio;
                   e.imagen = foto;
+                  e.nombre = nombre;
+                  e.codigo = codigo;
                 },
               );
               safeSetState(() {});

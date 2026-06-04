@@ -181,14 +181,14 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                             children: [
                                               Text(
                                                 valueOrDefault<String>(
-                                                  itemCarritoItem.productoRef != null
-                                                      ? getProductByRef(itemCarritoItem.productoRef!)?.nombre ?? itemCarritoItem.productoRef?.id
+                                                  itemCarritoItem.nombre.isNotEmpty
+                                                      ? itemCarritoItem.nombre
                                                       : 'Producto',
                                                   'Producto',
                                                 ),
                                                 style: FlutterFlowTheme.of(context).bodyLarge.override(
                                                       font: GoogleFonts.vollkornSc(),
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight: FontWeight.bold,
                                                     ),
                                               ),
                                               const SizedBox(height: 4),
@@ -213,6 +213,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                         productoActual: itemCarritoItem.productoRef,
                                         precio: itemCarritoItem.precio,
                                         foto: itemCarritoItem.imagen,
+                                        nombre: itemCarritoItem.nombre,
+                                        codigo: itemCarritoItem.codigo,
                                       ),
                                     ],
                                   ),
@@ -325,13 +327,12 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                             final subtotal = FFAppState().carrito.fold<double>(0.0, (sum, item) => sum + (item.precio * item.cantidad));
 
                                             final cartList = FFAppState().carrito.map((item) {
-                                              final prod = item.productoRef != null ? getProductByRef(item.productoRef!) : null;
                                               return {
-                                                'nombre': prod?.nombre ?? item.productoRef?.id ?? 'Producto',
+                                                'nombre': item.nombre.isNotEmpty ? item.nombre : 'Producto',
                                                 'cantidad': item.cantidad,
                                                 'precio': item.precio,
                                                 'subtotal': item.precio * item.cantidad,
-                                                'codigo': prod?.codigo ?? '',
+                                                'codigo': item.codigo,
                                               };
                                             }).toList();
 

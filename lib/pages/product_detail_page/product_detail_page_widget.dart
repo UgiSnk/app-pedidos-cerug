@@ -189,6 +189,8 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget> {
                   productoActual: widget.productoDoc!.reference,
                   precio: widget.productoDoc!.precio,
                   foto: widget.productoDoc!.foto,
+                  nombre: widget.productoDoc!.nombre,
+                  codigo: widget.productoDoc!.codigo,
                 ),
               ),
             ],

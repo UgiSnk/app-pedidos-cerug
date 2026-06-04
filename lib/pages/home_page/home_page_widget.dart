@@ -100,7 +100,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               automaticallyImplyLeading: false,
               title: Image.asset(
                 'assets/images/logo.png',
-                height: 40,
+                height: 68,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Text(
                   'Component',
@@ -114,6 +114,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               actions: const [],
               centerTitle: true,
               elevation: 1,
+              toolbarHeight: 88.0,
             ),
             body: SafeArea(
               top: true,
