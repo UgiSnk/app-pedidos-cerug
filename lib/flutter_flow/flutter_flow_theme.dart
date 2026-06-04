@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class FlutterFlowTheme {
   static FlutterFlowTheme of(BuildContext context) => FlutterFlowTheme();
 
-  Color get primary => const Color(0xFFA7860D); // Oro Envejecido (Accent)
+  Color get primary => const Color(0xFFDCC39A); // Oro Claro (Logo)
   Color get secondary => const Color(0xFF79610B); // Bronce Oscuro
   Color get tertiary => const Color(0xFF2E1600); // Café Quemado / Carbón
   Color get alternate => const Color(0xFFD1D5DB); // Gris Claro para bordes

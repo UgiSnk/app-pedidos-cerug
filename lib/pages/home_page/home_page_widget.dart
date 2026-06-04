@@ -160,7 +160,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                   fontSize: 18,
-                                  color: Colors.white,
+                                  color: const Color(0xFF111111),
                                 ),
                           ),
                         ),
