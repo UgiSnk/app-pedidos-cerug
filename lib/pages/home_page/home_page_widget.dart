@@ -98,8 +98,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             appBar: AppBar(
               backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
-              title: Image.network(
-                'https://component-newhouse.com/wp-content/uploads/2025/10/cropped-logo-COMPONENT-copia-900x178-1.png',
+              title: Image.asset(
+                'assets/images/logo.png',
                 height: 40,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Text(
