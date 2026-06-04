@@ -54,10 +54,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
     return StreamBuilder<List<VendedoresRecord>>(
       stream: queryVendedoresRecord(
-        queryBuilder: (vendedoresRecord) => vendedoresRecord.where(
-          'vendedor_id',
-          isEqualTo: widget.vendedorID,
-        ),
         singleRecord: true,
       ),
       builder: (context, snapshot) {
@@ -80,12 +76,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         }
         List<VendedoresRecord> homePageVendedoresRecordList = snapshot.data!;
         // Return an empty Container when the item does not exist.
-        if (snapshot.data!.isEmpty) {
+        if (homePageVendedoresRecordList.isEmpty) {
           return Container();
         }
-        final homePageVendedoresRecord = homePageVendedoresRecordList.isNotEmpty
-            ? homePageVendedoresRecordList.first
-            : null;
+        final targetVendedorId = widget.vendedorID ?? 'vendedor_component';
+        VendedoresRecord? homePageVendedoresRecord;
+        try {
+          homePageVendedoresRecord = homePageVendedoresRecordList.firstWhere(
+            (v) => v.id == targetVendedorId || v.vendedorId == targetVendedorId,
+          );
+        } catch (_) {
+          homePageVendedoresRecord = homePageVendedoresRecordList.first;
+        }
 
         return GestureDetector(
           onTap: () {
@@ -133,7 +135,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: Image.network(
-                            homePageVendedoresRecord!.miniatura,
+                            homePageVendedoresRecord.miniatura,
                             width: 50,
                             height: 50,
                             fit: BoxFit.cover,

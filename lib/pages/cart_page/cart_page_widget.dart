@@ -99,15 +99,23 @@ class _CartPageWidgetState extends State<CartPageWidget> {
           top: true,
           child: StreamBuilder<List<VendedoresRecord>>(
             stream: queryVendedoresRecord(
-              queryBuilder: (vendedoresRecord) => vendedoresRecord.where(
-                'vendedor_id',
-                isEqualTo: FFAppState().vendedorActual,
-              ),
               singleRecord: true,
             ),
             builder: (context, snapshot) {
               final vendedores = snapshot.data ?? [];
-              final vendedor = vendedores.isNotEmpty ? vendedores.first : null;
+              final targetVendedorId = FFAppState().vendedorActual.isNotEmpty
+                  ? FFAppState().vendedorActual
+                  : 'vendedor_component';
+              VendedoresRecord? vendedor;
+              if (vendedores.isNotEmpty) {
+                try {
+                  vendedor = vendedores.firstWhere(
+                    (v) => v.id == targetVendedorId || v.vendedorId == targetVendedorId,
+                  );
+                } catch (_) {
+                  vendedor = vendedores.first;
+                }
+              }
 
               return Column(
                 mainAxisSize: MainAxisSize.max,
