@@ -331,6 +331,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                 'cantidad': item.cantidad,
                                                 'precio': item.precio,
                                                 'subtotal': item.precio * item.cantidad,
+                                                'codigo': prod?.codigo ?? '',
                                               };
                                             }).toList();
 

@@ -38,11 +38,13 @@ String generarMensajeWhatsApp(
     String name = 'Producto';
     int qty = 1;
     double price = 0.0;
+    String codigo = '';
     
     if (item is Map) {
       name = item['nombre'] ?? 'Producto';
       qty = item['cantidad'] ?? 1;
       price = (item['subtotal'] ?? ((item['precio'] ?? 0.0) * qty)).toDouble();
+      codigo = item['codigo'] ?? '';
     } else {
       // Si es un struct o tipo de datos personalizado
       try {
@@ -54,9 +56,13 @@ String generarMensajeWhatsApp(
       try {
         price = ((item.precio ?? 0.0) * qty).toDouble();
       } catch (_) {}
+      try {
+        codigo = item.codigo ?? '';
+      } catch (_) {}
     }
     
-    message += "• $qty x *$name* - \$${price.toStringAsFixed(0)}\n";
+    String codMsg = codigo.isNotEmpty ? "[$codigo] " : "";
+    message += "• $qty x $codMsg*$name* - \$${price.toStringAsFixed(0)}\n";
   }
 
   // 3. Cierre y Total

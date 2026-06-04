@@ -322,6 +322,7 @@
                   <tr class="text-slate-400 text-xs font-semibold uppercase">
                     <th class="py-4 px-6">Foto</th>
                     <th class="py-4 px-6">Nombre del Producto</th>
+                    <th class="py-4 px-6">Código</th>
                     <th class="py-4 px-6">Categoría</th>
                     <th class="py-4 px-6">Precio</th>
                     <th class="py-4 px-6">Descripción</th>
@@ -433,6 +434,11 @@
             <label class="block text-slate-300 text-xs font-semibold mb-1" for="product-price">Precio ($ ARS)</label>
             <input id="product-price" type="number" placeholder="Ej: 22000" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm" required>
           </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 text-xs font-semibold mb-1" for="product-code">Código Interno (Opcional)</label>
+          <input id="product-code" type="text" placeholder="Ej: VELA-GR-NG" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm">
         </div>
 
         <div>
@@ -681,6 +687,7 @@
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="border-b border-white/5 bg-slate-900/50 text-slate-400 font-semibold">
+                  <th class="py-2.5 px-4">Código</th>
                   <th class="py-2.5 px-4">Nombre</th>
                   <th class="py-2.5 px-4">Precio</th>
                   <th class="py-2.5 px-4">Categoría</th>

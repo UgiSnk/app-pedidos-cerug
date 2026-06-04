@@ -61,6 +61,7 @@ class ProductosRecord {
   final String foto;
   final String categoriaId;
   final String descripcion;
+  final String codigo;
   final DocumentReference reference;
 
   ProductosRecord({
@@ -70,6 +71,7 @@ class ProductosRecord {
     required this.foto,
     required this.categoriaId,
     required this.descripcion,
+    required this.codigo,
     required this.reference,
   });
 
@@ -82,6 +84,7 @@ class ProductosRecord {
       foto: data['foto'] ?? '',
       categoriaId: data['categoria_id'] ?? '',
       descripcion: data['descripcion'] ?? '',
+      codigo: data['codigo'] ?? '',
       reference: doc.reference,
     );
   }
@@ -165,6 +168,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK',
     categoriaId: 'Velas',
     descripcion: 'Medida 18x10',
+    codigo: 'VEL-GR-BL',
     reference: MockDocumentReference('Vela Grande Blanco', 'productos/Vela Grande Blanco'),
   ),
   ProductosRecord(
@@ -174,6 +178,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-',
     categoriaId: 'Velas',
     descripcion: 'Medida 18x10',
+    codigo: 'VEL-GR-NE',
     reference: MockDocumentReference('Vela Grande Negro', 'productos/Vela Grande Negro'),
   ),
   ProductosRecord(
@@ -183,6 +188,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/13beVbgzBrbxs3INV-852e37rsnkzsFW-',
     categoriaId: 'Velas',
     descripcion: 'Medida 18x10',
+    codigo: 'VEL-GR-VE',
     reference: MockDocumentReference('Vela Grande Verde', 'productos/Vela Grande Verde'),
   ),
   ProductosRecord(
@@ -192,6 +198,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1ZyGz0Cymz-1jupj0mMTj8zVpOBt7QY_C',
     categoriaId: 'Velas',
     descripcion: 'Medida 25x10',
+    codigo: 'VEL-XL-BL',
     reference: MockDocumentReference('Vela XL Blanco', 'productos/Vela XL Blanco'),
   ),
   ProductosRecord(
@@ -201,6 +208,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1MDjZsrFP_BBMzb6HzbdPOWkzoSG0ard0',
     categoriaId: 'Velas',
     descripcion: 'Medida 25x10',
+    codigo: 'VEL-XL-NE',
     reference: MockDocumentReference('Vela XL Negro', 'productos/Vela XL Negro'),
   ),
   ProductosRecord(
@@ -210,6 +218,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1DMnd1n4iJKvbZk6S4GN6Xq0NJ8RIfByc',
     categoriaId: 'Velas',
     descripcion: 'Medida 25x10',
+    codigo: 'VEL-XL-VE',
     reference: MockDocumentReference('Vela XL Verde', 'productos/Vela XL Verde'),
   ),
   ProductosRecord(
@@ -219,6 +228,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8',
     categoriaId: 'Velas',
     descripcion: 'Medida 15x17',
+    codigo: 'VEL-XXL-BL',
     reference: MockDocumentReference('Vela XXL Blanco', 'productos/Vela XXL Blanco'),
   ),
   ProductosRecord(
@@ -228,6 +238,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1IDQVzbuaUoHKwUtOf0PZNRmsdAoKvShG',
     categoriaId: 'Velas',
     descripcion: 'Medida 15x17',
+    codigo: 'VEL-XXL-NE',
     reference: MockDocumentReference('Vela XXL Negro', 'productos/Vela XXL Negro'),
   ),
   ProductosRecord(
@@ -237,6 +248,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1WAKDunDwINTxXP_ac_PQeCoaUK_sukOV',
     categoriaId: 'Velas',
     descripcion: 'Medida 15x17',
+    codigo: 'VEL-XXL-VE',
     reference: MockDocumentReference('Vela XXL Verde', 'productos/Vela XXL Verde'),
   ),
   ProductosRecord(
@@ -246,6 +258,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
     categoriaId: 'Velas',
     descripcion: '',
+    codigo: 'VAS-CH',
     reference: MockDocumentReference('Vaso chico con vela', 'productos/Vaso chico con vela'),
   ),
   ProductosRecord(
@@ -255,6 +268,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
     categoriaId: 'Velas',
     descripcion: '',
+    codigo: 'VAS-GR',
     reference: MockDocumentReference('Vaso grande con vela', 'productos/Vaso grande con vela'),
   ),
 
@@ -266,6 +280,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/11oF3-k-tSV7FZZz9oI3RDkMrXF4VkI8b',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-01',
     reference: MockDocumentReference('Vidrio 1', 'productos/Vidrio 1'),
   ),
   ProductosRecord(
@@ -275,6 +290,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1JN0g9JRX2A74qKVDP70hiZrsC36diV4j',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-02',
     reference: MockDocumentReference('Vidrio 2', 'productos/Vidrio 2'),
   ),
   ProductosRecord(
@@ -284,6 +300,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1lkkB3V5tNpzJbJmrZtcUkR8FiMDtEI3H',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-03',
     reference: MockDocumentReference('Vidrio 3', 'productos/Vidrio 3'),
   ),
   ProductosRecord(
@@ -293,6 +310,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1rTzwMQBTuWG8QMII4m2OvQXWyAKXvCCu',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-04',
     reference: MockDocumentReference('Vidrio 4', 'productos/Vidrio 4'),
   ),
   ProductosRecord(
@@ -302,6 +320,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1h4WXu0gKNpoAraSkcGSGJS61Lp-vJ-Lh',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-05',
     reference: MockDocumentReference('Vidrio 5', 'productos/Vidrio 5'),
   ),
   ProductosRecord(
@@ -311,6 +330,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1RE3w4WGCl8n9qj1UXUA4SZGzDQuuBWCp',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-06',
     reference: MockDocumentReference('Vidrio 6', 'productos/Vidrio 6'),
   ),
   ProductosRecord(
@@ -320,6 +340,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1SENQbB7MMbJz5IDNsg7cXlaeNpgYXHWO',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-07',
     reference: MockDocumentReference('Vidrio 7', 'productos/Vidrio 7'),
   ),
   ProductosRecord(
@@ -329,6 +350,7 @@ final List<ProductosRecord> mockProductos = [
     foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu',
     categoriaId: 'Vidrios',
     descripcion: '',
+    codigo: 'VID-08',
     reference: MockDocumentReference('Vidrio 8', 'productos/Vidrio 8'),
   ),
 ];

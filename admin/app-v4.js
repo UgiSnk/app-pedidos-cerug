@@ -116,26 +116,26 @@ function restoreFirebaseRefs() {
 
 // Datos Simulados por Defecto (Mock Data)
 const defaultMockProductos = [
-  { id: 'Vela-Grande-Blanco', nombre: 'Vela Grande Blanco', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK', categoria_id: 'Velas', descripcion: 'Medida 18x10' },
-  { id: 'Vela-Grande-Negro', nombre: 'Vela Grande Negro', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-', categoria_id: 'Velas', descripcion: 'Medida 18x10' },
-  { id: 'Vela-Grande-Verde', nombre: 'Vela Grande Verde', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/13beVbgzBrbxs3INV-852e37rsnkzsFW-', categoria_id: 'Velas', descripcion: 'Medida 18x10' },
-  { id: 'Vela-XL-Blanco', nombre: 'Vela XL Blanco', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1ZyGz0Cymz-1jupj0mMTj8zVpOBt7QY_C', categoria_id: 'Velas', descripcion: 'Medida 25x10' },
-  { id: 'Vela-XL-Negro', nombre: 'Vela XL Negro', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1MDjZsrFP_BBMzb6HzbdPOWkzoSG0ard0', categoria_id: 'Velas', descripcion: 'Medida 25x10' },
-  { id: 'Vela-XL-Verde', nombre: 'Vela XL Verde', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1DMnd1n4iJKvbZk6S4GN6Xq0NJ8RIfByc', categoria_id: 'Velas', descripcion: 'Medida 25x10' },
-  { id: 'Vela-XXL-Blanco', nombre: 'Vela XXL Blanco', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8', categoria_id: 'Velas', descripcion: 'Medida 15x17' },
-  { id: 'Vela-XXL-Negro', nombre: 'Vela XXL Negro', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1IDQVzbuaUoHKwUtOf0PZNRmsdAoKvShG', categoria_id: 'Velas', descripcion: 'Medida 15x17' },
-  { id: 'Vela-XXL-Verde', nombre: 'Vela XXL Verde', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1WAKDunDwINTxXP_ac_PQeCoaUK_sukOV', categoria_id: 'Velas', descripcion: 'Medida 15x17' },
-  { id: 'Vaso-chico-con-vela', nombre: 'Vaso chico con vela', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática' },
-  { id: 'Vaso-grande-con-vela', nombre: 'Vaso grande con vela', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática' },
+  { id: 'Vela-Grande-Blanco', nombre: 'Vela Grande Blanco', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-BL' },
+  { id: 'Vela-Grande-Negro', nombre: 'Vela Grande Negro', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-NE' },
+  { id: 'Vela-Grande-Verde', nombre: 'Vela Grande Verde', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/13beVbgzBrbxs3INV-852e37rsnkzsFW-', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-VE' },
+  { id: 'Vela-XL-Blanco', nombre: 'Vela XL Blanco', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1ZyGz0Cymz-1jupj0mMTj8zVpOBt7QY_C', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-BL' },
+  { id: 'Vela-XL-Negro', nombre: 'Vela XL Negro', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1MDjZsrFP_BBMzb6HzbdPOWkzoSG0ard0', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-NE' },
+  { id: 'Vela-XL-Verde', nombre: 'Vela XL Verde', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1DMnd1n4iJKvbZk6S4GN6Xq0NJ8RIfByc', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-VE' },
+  { id: 'Vela-XXL-Blanco', nombre: 'Vela XXL Blanco', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-BL' },
+  { id: 'Vela-XXL-Negro', nombre: 'Vela XXL Negro', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1IDQVzbuaUoHKwUtOf0PZNRmsdAoKvShG', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-NE' },
+  { id: 'Vela-XXL-Verde', nombre: 'Vela XXL Verde', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1WAKDunDwINTxXP_ac_PQeCoaUK_sukOV', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-VE' },
+  { id: 'Vaso-chico-con-vela', nombre: 'Vaso chico con vela', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática', codigo: 'VAS-CH' },
+  { id: 'Vaso-grande-con-vela', nombre: 'Vaso grande con vela', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática', codigo: 'VAS-GR' },
   
-  { id: 'Vidrio-1', nombre: 'Vidrio 1', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/11oF3-k-tSV7FZZz9oI3RDkMrXF4VkI8b', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-2', nombre: 'Vidrio 2', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1JN0g9JRX2A74qKVDP70hiZrsC36diV4j', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-3', nombre: 'Vidrio 3', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1lkkB3V5tNpzJbJmrZtcUkR8FiMDtEI3H', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-4', nombre: 'Vidrio 4', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1rTzwMQBTuWG8QMII4m2OvQXWyAKXvCCu', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-5', nombre: 'Vidrio 5', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1h4WXu0gKNpoAraSkcGSGJS61Lp-vJ-Lh', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-6', nombre: 'Vidrio 6', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1RE3w4WGCl8n9qj1UXUA4SZGzDQuuBWCp', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-7', nombre: 'Vidrio 7', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1SENQbB7MMbJz5IDNsg7cXlaeNpgYXHWO', categoria_id: 'Vidrios', descripcion: '' },
-  { id: 'Vidrio-8', nombre: 'Vidrio 8', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu', categoria_id: 'Vidrios', descripcion: '' }
+  { id: 'Vidrio-1', nombre: 'Vidrio 1', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/11oF3-k-tSV7FZZz9oI3RDkMrXF4VkI8b', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-01' },
+  { id: 'Vidrio-2', nombre: 'Vidrio 2', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1JN0g9JRX2A74qKVDP70hiZrsC36diV4j', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-02' },
+  { id: 'Vidrio-3', nombre: 'Vidrio 3', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1lkkB3V5tNpzJbJmrZtcUkR8FiMDtEI3H', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-03' },
+  { id: 'Vidrio-4', nombre: 'Vidrio 4', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1rTzwMQBTuWG8QMII4m2OvQXWyAKXvCCu', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-04' },
+  { id: 'Vidrio-5', nombre: 'Vidrio 5', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1h4WXu0gKNpoAraSkcGSGJS61Lp-vJ-Lh', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-05' },
+  { id: 'Vidrio-6', nombre: 'Vidrio 6', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1RE3w4WGCl8n9qj1UXUA4SZGzDQuuBWCp', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-06' },
+  { id: 'Vidrio-7', nombre: 'Vidrio 7', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1SENQbB7MMbJz5IDNsg7cXlaeNpgYXHWO', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-07' },
+  { id: 'Vidrio-8', nombre: 'Vidrio 8', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-08' }
 ];
 
 const defaultMockCategorias = [
@@ -305,7 +305,8 @@ async function loadInitialData() {
           precio: Number(data.precio || 0),
           foto: data.foto || '',
           categoria_id: data.categoria_id || '',
-          descripcion: data.descripcion || ''
+          descripcion: data.descripcion || '',
+          codigo: data.codigo || ''
         });
       });
 
@@ -449,6 +450,7 @@ function renderProductsTable() {
         </div>
       </td>
       <td class="py-4 px-6 font-semibold text-white">${p.nombre || 'Producto sin nombre'}</td>
+      <td class="py-4 px-6 font-mono text-xs text-slate-400 font-semibold">${p.codigo || '-'}</td>
       <td class="py-4 px-6 text-slate-400">
         <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
           ${p.categoria_id || 'General'}
@@ -714,6 +716,7 @@ function openProductModal(productId = null) {
       document.getElementById("product-price").value = prod.precio;
       document.getElementById("product-desc").value = prod.descripcion;
       document.getElementById("product-img-url").value = prod.foto;
+      document.getElementById("product-code").value = prod.codigo || "";
       
       if (prod.foto) {
         previewImg.src = prod.foto;
@@ -724,6 +727,7 @@ function openProductModal(productId = null) {
   } else {
     document.getElementById("modal-title").innerText = "Agregar Producto";
     document.getElementById("product-modal-id").value = "";
+    document.getElementById("product-code").value = "";
   }
   
   prodModal.classList.remove("hidden");
@@ -783,6 +787,7 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   const price = Number(document.getElementById("product-price").value);
   const desc = document.getElementById("product-desc").value.trim();
   const urlInput = document.getElementById("product-img-url").value.trim();
+  const code = document.getElementById("product-code").value.trim();
 
   let finalImageUrl = sanitizeImageUrl(urlInput) || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
 
@@ -809,7 +814,8 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     precio: price,
     foto: finalImageUrl,
     categoria_id: category,
-    descripcion: desc
+    descripcion: desc,
+    codigo: code
   };
 
   if (useMock) {
@@ -831,7 +837,8 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
         precio: price,
         foto: finalImageUrl,
         categoria_id: category,
-        descripcion: desc
+        descripcion: desc,
+        codigo: code
       });
     } catch (err) {
       console.error("Error guardando producto en Firestore:", err);
@@ -1237,10 +1244,10 @@ cancelImportBtn.addEventListener("click", closeBulkModal);
 
 // Descargar plantilla CSV modelo
 downloadTemplateBtn.addEventListener("click", () => {
-  const csvContent = "\uFEFFnombre,precio,categoria_id,descripcion,foto_url\n" +
-    "\"Vela Aromatica Flor de Loto\",18500,\"Velas\",\"Vela de soja premium perfumada en envase de vidrio decorado\",\"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&q=80&w=600\"\n" +
-    "\"Nordico Gris\",29000,\"Vidrios\",\"Florero de vidrio con textura estilo nordico de 20cm de alto\",\"https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&q=80&w=600\"\n" +
-    "\"Vela XXL Blanco\",28000,\"Velas\",\"Medida 15x17 vela gigante aromatica\",\"https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8\"\n";
+  const csvContent = "\uFEFFnombre,precio,categoria_id,descripcion,foto_url,codigo\n" +
+    "\"Vela Aromatica Flor de Loto\",18500,\"Velas\",\"Vela de soja premium perfumada en envase de vidrio decorado\",\"https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&q=80&w=600\",\"VELA-LOT\"\n" +
+    "\"Nordico Gris\",29000,\"Vidrios\",\"Florero de vidrio con textura estilo nordico de 20cm de alto\",\"https://images.unsplash.com/photo-1578500494198-246f612d3b3d?auto=format&fit=crop&q=80&w=600\",\"NORD-GR\"\n" +
+    "\"Vela XXL Blanco\",28000,\"Velas\",\"Medida 15x17 vela gigante aromatica\",\"https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8\",\"VELA-XXL-BL\"\n";
   
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -1349,13 +1356,15 @@ function processCsvText(text) {
     const categoria = row[2] || "General";
     const descripcion = row[3] || "";
     const foto = row[4] || "";
+    const codigo = row[5] || "";
     
     const product = {
       nombre,
       precio,
       categoria_id: categoria,
       descripcion,
-      foto
+      foto,
+      codigo
     };
     
     parsedCsvProducts.push(product);
@@ -1366,6 +1375,7 @@ function processCsvText(text) {
       const tr = document.createElement("tr");
       tr.className = "hover:bg-white/5 transition-colors border-b border-white/5";
       tr.innerHTML = `
+        <td class="py-2.5 px-4 text-slate-400 font-mono font-medium">${codigo || '-'}</td>
         <td class="py-2.5 px-4 font-semibold text-white truncate max-w-[150px]">${nombre}</td>
         <td class="py-2.5 px-4 font-mono text-emerald-400 font-bold">$${precio.toLocaleString('es-AR')}</td>
         <td class="py-2.5 px-4 text-slate-300 font-medium">${categoria}</td>
@@ -1460,7 +1470,8 @@ startImportBtn.addEventListener("click", async () => {
       precio: prod.precio,
       foto: finalImageUrl,
       categoria_id: catId,
-      descripcion: prod.descripcion
+      descripcion: prod.descripcion,
+      codigo: prod.codigo || ""
     };
     
     if (useMock) {
@@ -1475,7 +1486,8 @@ startImportBtn.addEventListener("click", async () => {
           precio: prod.precio,
           foto: finalImageUrl,
           categoria_id: catId,
-          descripcion: prod.descripcion
+          descripcion: prod.descripcion,
+          codigo: prod.codigo || ""
         });
         successCount++;
       } catch (err) {
