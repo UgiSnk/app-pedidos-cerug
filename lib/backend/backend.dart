@@ -91,6 +91,7 @@ class ProductosRecord {
 }
 
 // Mock DocumentReference for when Firebase is not initialized
+// ignore: subtype_of_sealed_class
 class MockDocumentReference implements DocumentReference<Map<String, dynamic>> {
   @override
   final String id;

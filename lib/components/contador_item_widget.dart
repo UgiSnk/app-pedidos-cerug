@@ -89,8 +89,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
               : FlutterFlowTheme.of(context).alternate,
           size: 24,
         ),
-        countBuilder: (count) => Text(
-          count.toString(),
+        countBuilder: (countVal) => Text(
+          countVal.toString(),
           style: FlutterFlowTheme.of(context).titleLarge.override(
                 font: GoogleFonts.vollkornSc(
                   fontWeight:
@@ -103,8 +103,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
               ),
         ),
         count: _model.countControllerValue ??= 0,
-        updateCount: (count) async {
-          safeSetState(() => _model.countControllerValue = count);
+        updateCount: (newCount) async {
+          safeSetState(() => _model.countControllerValue = newCount);
           int index = functions.buscarIndiceProducto(
               FFAppState().carrito.toList(), widget.productoActual!);
           
@@ -115,10 +115,10 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
           final String codigo = widget.codigo ?? prod?.codigo ?? '';
 
           if (index == -1) {
-            if (count > 0) {
+            if (newCount > 0) {
               FFAppState().addToCarrito(ItemCarritoStruct(
                 productoRef: widget.productoActual,
-                cantidad: count,
+                cantidad: newCount,
                 precio: precio,
                 imagen: foto,
                 nombre: nombre,
@@ -127,11 +127,11 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
               safeSetState(() {});
             }
           } else {
-            if (count > 0) {
+            if (newCount > 0) {
               FFAppState().updateCarritoAtIndex(
                 index,
                 (e) {
-                  e.cantidad = count;
+                  e.cantidad = newCount;
                   e.precio = precio;
                   e.imagen = foto;
                   e.nombre = nombre;

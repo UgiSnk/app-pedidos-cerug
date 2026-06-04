@@ -14,7 +14,7 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   } catch (e) {
-    print('Firebase initialization failed (Running in Mock Mode): $e');
+    debugPrint('Firebase initialization failed (Running in Mock Mode): $e');
   }
   runApp(
     ChangeNotifierProvider(
@@ -31,8 +31,13 @@ final GoRouter _router = GoRouter(
       path: '/',
       name: 'NavBarPage',
       builder: (BuildContext context, GoRouterState state) {
-        final initialPage = state.uri.queryParameters['page'] ?? 'HomePage';
+        final rawPage = state.uri.queryParameters['page'] ?? 'HomePage';
         final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_component';
+        
+        String initialPage = 'HomePage';
+        if (rawPage == 'CartPage' || rawPage == 'Carrito' || rawPage == 'cart' || rawPage == 'carrito') {
+          initialPage = 'CartPage';
+        }
         
         Widget? targetPage;
         if (initialPage == 'HomePage') {
@@ -41,7 +46,7 @@ final GoRouter _router = GoRouter(
           targetPage = const CartPageWidget();
         }
         
-        return NavBarPage(initialPage: initialPage, page: targetPage);
+        return NavBarPage(initialPage: initialPage, page: targetPage, vendedorID: vendedorID);
       },
     ),
     GoRoute(
@@ -124,10 +129,11 @@ class MyApp extends StatelessWidget {
 }
 
 class NavBarPage extends StatefulWidget {
-  const NavBarPage({super.key, this.initialPage, this.page});
+  const NavBarPage({super.key, this.initialPage, this.page, this.vendedorID});
 
   final String? initialPage;
   final Widget? page;
+  final String? vendedorID;
 
   @override
   State<NavBarPage> createState() => _NavBarPageState();
@@ -158,7 +164,7 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   Widget build(BuildContext context) {
     final tabs = {
-      'HomePage': const HomePageWidget(),
+      'HomePage': HomePageWidget(vendedorID: widget.vendedorID),
       'CartPage': const CartPageWidget(),
     };
     final currentIndex = _currentPageName == 'CartPage' ? 2 : 1;

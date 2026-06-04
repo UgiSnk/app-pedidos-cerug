@@ -303,7 +303,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                     ),
                                     Text(
                                       formatNumber(
-                                        FFAppState().carrito.fold<double>(0.0, (sum, item) => sum + (item.precio * item.cantidad)),
+                                        FFAppState().carrito.fold<double>(0.0, (total, item) => total + (item.precio * item.cantidad)),
                                         formatType: FormatType.decimal,
                                         decimalType: DecimalType.periodDecimal,
                                         currency: '\$',
@@ -324,7 +324,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                         onPressed: () async {
                                           if (_formKey.currentState!.validate()) {
                                             final clientName = _nameController.text.trim();
-                                            final subtotal = FFAppState().carrito.fold<double>(0.0, (sum, item) => sum + (item.precio * item.cantidad));
+                                            final subtotal = FFAppState().carrito.fold<double>(0.0, (total, item) => total + (item.precio * item.cantidad));
 
                                             final cartList = FFAppState().carrito.map((item) {
                                               return {
