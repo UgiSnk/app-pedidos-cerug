@@ -96,31 +96,23 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: AppBar(
-              backgroundColor: FlutterFlowTheme.of(context).primary,
+              backgroundColor: const Color(0xFF111111),
               automaticallyImplyLeading: false,
-              title: Text(
-                'Component New House',
-                style: FlutterFlowTheme.of(context).headlineMedium.override(
-                      font: GoogleFonts.interTight(
-                        fontWeight: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .fontWeight,
-                        fontStyle: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .fontStyle,
+              title: Image.network(
+                'https://component-newhouse.com/wp-content/uploads/2025/10/cropped-logo-COMPONENT-copia-900x178-1-250x49.png',
+                height: 36,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => Text(
+                  'Component',
+                  style: FlutterFlowTheme.of(context).headlineMedium.override(
+                        font: GoogleFonts.lora(),
+                        color: Colors.white,
+                        fontSize: 22,
                       ),
-                      color: Colors.white,
-                      fontSize: 22,
-                      letterSpacing: 0.0,
-                      fontWeight: FlutterFlowTheme.of(context)
-                          .headlineMedium
-                          .fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                    ),
+                ),
               ),
               actions: const [],
-              centerTitle: false,
+              centerTitle: true,
               elevation: 2,
             ),
             body: SafeArea(
@@ -128,53 +120,52 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          homePageVendedoresRecord!.miniatura,
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            width: 60,
-                            height: 60,
-                            color: FlutterFlowTheme.of(context).alternate,
-                            child: Icon(
-                              Icons.image_not_supported_outlined,
-                              color: FlutterFlowTheme.of(context).secondaryText,
-                              size: 24,
+                   Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: FlutterFlowTheme.of(context).primary,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.network(
+                            homePageVendedoresRecord!.miniatura,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              width: 50,
+                              height: 50,
+                              color: FlutterFlowTheme.of(context).alternate,
+                              child: Icon(
+                                Icons.image_not_supported_outlined,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                                size: 24,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        valueOrDefault<String>(
-                          homePageVendedoresRecord.nombre,
-                          '0',
-                        ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.inter(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              fontSize: 22,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            valueOrDefault<String>(
+                              homePageVendedoresRecord.nombre,
+                              'Vendedor',
                             ),
-                      ),
-                    ],
+                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                  font: GoogleFonts.vollkornSc(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Expanded(
                     child: StreamBuilder<List<CategoriasRecord>>(
@@ -272,7 +263,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         style: FlutterFlowTheme.of(context)
                                             .bodyMedium
                                             .override(
-                                              font: GoogleFonts.inter(
+                                              font: GoogleFonts.vollkornSc(
                                                 fontWeight:
                                                     FlutterFlowTheme.of(context)
                                                         .bodyMedium

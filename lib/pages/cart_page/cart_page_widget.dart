@@ -57,7 +57,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: const Color(0xFF111111),
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -76,7 +76,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
           title: Text(
             'Carrito',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
-                  font: GoogleFonts.interTight(
+                  font: GoogleFonts.lora(
                     fontWeight:
                         FlutterFlowTheme.of(context).headlineMedium.fontWeight,
                     fontStyle:
@@ -124,7 +124,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                               child: Text(
                                 'Tu carrito está vacío',
                                 style: FlutterFlowTheme.of(context).bodyLarge.override(
-                                      font: GoogleFonts.inter(),
+                                      font: GoogleFonts.vollkornSc(),
                                       color: FlutterFlowTheme.of(context).secondaryText,
                                     ),
                               ),
@@ -187,7 +187,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                   'Producto',
                                                 ),
                                                 style: FlutterFlowTheme.of(context).bodyLarge.override(
-                                                      font: GoogleFonts.inter(),
+                                                      font: GoogleFonts.vollkornSc(),
                                                       fontWeight: FontWeight.w600,
                                                     ),
                                               ),
@@ -200,7 +200,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                   currency: '\$',
                                                 )}',
                                                 style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                      font: GoogleFonts.inter(),
+                                                      font: GoogleFonts.vollkornSc(),
                                                       color: FlutterFlowTheme.of(context).secondaryText,
                                                     ),
                                               ),
@@ -295,7 +295,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                     Text(
                                       'Total:',
                                       style: FlutterFlowTheme.of(context).titleMedium.override(
-                                            font: GoogleFonts.interTight(),
+                                            font: GoogleFonts.vollkornSc(),
                                             fontWeight: FontWeight.bold,
                                           ),
                                     ),
@@ -307,7 +307,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                         currency: '\$',
                                       ),
                                       style: FlutterFlowTheme.of(context).headlineSmall.override(
-                                            font: GoogleFonts.interTight(),
+                                            font: GoogleFonts.vollkornSc(),
                                             color: FlutterFlowTheme.of(context).primary,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -354,7 +354,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                           height: 44,
                                           color: const Color(0xFF25D366),
                                           textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                font: GoogleFonts.interTight(),
+                                                font: GoogleFonts.vollkornSc(),
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w600,
                                               ),
@@ -395,7 +395,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                         height: 44,
                                         color: FlutterFlowTheme.of(context).alternate,
                                         textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                              font: GoogleFonts.interTight(),
+                                              font: GoogleFonts.vollkornSc(),
                                               color: FlutterFlowTheme.of(context).primaryText,
                                               fontWeight: FontWeight.w600,
                                             ),

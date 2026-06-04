@@ -161,16 +161,22 @@ class _NavBarPageState extends State<NavBarPage> {
       'HomePage': const HomePageWidget(),
       'CartPage': const CartPageWidget(),
     };
-    final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
+    final currentIndex = _currentPageName == 'CartPage' ? 2 : 1;
 
     return Scaffold(
       body: _page ?? tabs[_currentPageName],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        onTap: (i) => setState(() {
-          _page = null;
-          _currentPageName = tabs.keys.toList()[i];
-        }),
+        onTap: (i) async {
+          if (i == 0) {
+            await launchURL('https://www.instagram.com/component_yz');
+          } else {
+            setState(() {
+              _page = null;
+              _currentPageName = i == 1 ? 'HomePage' : 'CartPage';
+            });
+          }
+        },
         backgroundColor: Colors.white,
         selectedItemColor: FlutterFlowTheme.of(context).primary,
         unselectedItemColor: FlutterFlowTheme.of(context).secondaryText,
@@ -178,6 +184,11 @@ class _NavBarPageState extends State<NavBarPage> {
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_alt_outlined),
+            activeIcon: Icon(Icons.camera_alt_rounded),
+            label: 'Instagram',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.grid_view_outlined),
             activeIcon: Icon(Icons.grid_view_rounded),

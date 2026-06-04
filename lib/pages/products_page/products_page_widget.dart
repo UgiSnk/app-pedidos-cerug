@@ -58,7 +58,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).primary,
+          backgroundColor: const Color(0xFF111111),
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -80,7 +80,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
               'Categoria',
             ),
             style: FlutterFlowTheme.of(context).headlineMedium.override(
-                  font: GoogleFonts.interTight(
+                  font: GoogleFonts.lora(
                     fontWeight:
                         FlutterFlowTheme.of(context).headlineMedium.fontWeight,
                     fontStyle:
@@ -201,7 +201,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                                             Text(
                                               listViewProductosRecord.nombre,
                                               style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                    font: GoogleFonts.inter(
+                                                    font: GoogleFonts.vollkornSc(
                                                       fontWeight: FontWeight.w600,
                                                     ),
                                                     fontSize: 16,
@@ -216,7 +216,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                                                 currency: '\$',
                                               ),
                                               style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                    font: GoogleFonts.inter(),
+                                                    font: GoogleFonts.vollkornSc(),
                                                     color: FlutterFlowTheme.of(context).secondaryText,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -292,11 +292,13 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          onTap: (i) {
+          currentIndex: 1,
+          onTap: (i) async {
             if (i == 0) {
-              context.go('/');
+              await launchURL('https://www.instagram.com/component_yz');
             } else if (i == 1) {
+              context.go('/');
+            } else if (i == 2) {
               context.go('/?page=CartPage');
             }
           },
@@ -307,6 +309,11 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.camera_alt_outlined),
+              activeIcon: Icon(Icons.camera_alt_rounded),
+              label: 'Instagram',
+            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.grid_view_outlined),
               activeIcon: Icon(Icons.grid_view_rounded),

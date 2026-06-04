@@ -90,7 +90,7 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
         countBuilder: (count) => Text(
           count.toString(),
           style: FlutterFlowTheme.of(context).titleLarge.override(
-                font: GoogleFonts.interTight(
+                font: GoogleFonts.vollkornSc(
                   fontWeight:
                       FlutterFlowTheme.of(context).titleLarge.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).titleLarge.fontStyle,
