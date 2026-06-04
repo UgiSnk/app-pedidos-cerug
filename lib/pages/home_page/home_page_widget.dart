@@ -96,24 +96,24 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: AppBar(
-              backgroundColor: const Color(0xFF111111),
+              backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
               title: Image.network(
-                'https://component-newhouse.com/wp-content/uploads/2025/10/cropped-logo-COMPONENT-copia-900x178-1-250x49.png',
-                height: 36,
+                'https://component-newhouse.com/wp-content/uploads/2025/10/cropped-logo-COMPONENT-copia-900x178-1.png',
+                height: 40,
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Text(
                   'Component',
                   style: FlutterFlowTheme.of(context).headlineMedium.override(
                         font: GoogleFonts.lora(),
-                        color: Colors.white,
+                        color: const Color(0xFF111111),
                         fontSize: 22,
                       ),
                 ),
               ),
               actions: const [],
               centerTitle: true,
-              elevation: 2,
+              elevation: 1,
             ),
             body: SafeArea(
               top: true,

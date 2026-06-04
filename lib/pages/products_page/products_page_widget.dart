@@ -58,7 +58,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF111111),
+          backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           leading: FlutterFlowIconButton(
             borderColor: Colors.transparent,
@@ -67,7 +67,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
             buttonSize: 60,
             icon: const Icon(
               Icons.arrow_back_rounded,
-              color: Colors.white,
+              color: Color(0xFF111111),
               size: 30,
             ),
             onPressed: () async {
@@ -86,7 +86,7 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                     fontStyle:
                         FlutterFlowTheme.of(context).headlineMedium.fontStyle,
                   ),
-                  color: Colors.white,
+                  color: const Color(0xFF111111),
                   fontSize: 22,
                   letterSpacing: 0.0,
                   fontWeight:
