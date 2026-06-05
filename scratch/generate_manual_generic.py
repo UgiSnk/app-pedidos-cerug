@@ -189,12 +189,7 @@ def build_pdf(filename):
     story = []
     
     # ================= PAGE 1: COVER & INTRO =================
-    banner_path = r"C:\Users\Ugi Desk\.gemini\antigravity\brain\79a21994-9700-4f3a-8e40-14ad9ff8424e\manual_banner_1780681865307.png"
-    if os.path.exists(banner_path):
-        story.append(Image(banner_path, width=504, height=168))
-        story.append(Spacer(1, 20))
-    else:
-        story.append(Spacer(1, 80))
+    story.append(Spacer(1, 100))
         
     story.append(Paragraph("MANUAL DE USUARIO Y OPERACIÓN", subtitle_style))
     story.append(Paragraph("Catálogo Móvil de Pedidos &<br/>Portal Administrador Web", title_style))
