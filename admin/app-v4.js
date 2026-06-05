@@ -147,10 +147,15 @@ const defaultMockVendedores = [
   { id: 'vendedor_component', nombre: 'Component New House', telefono: '5491173564074', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' }
 ];
 
+const defaultMockTokens = [
+  { id: 'token_ejemplo_pablo', clientName: 'Pablo Gómez', vendedorId: 'vendedor_component', deviceId: '', estado: 'inactive', fechaCreacion: new Date().toISOString() }
+];
+
 // Variables globales de datos cargados
 let allProducts = [];
 let allCategories = [];
 let allSellers = [];
+let allTokens = [];
 
 // Inicialización de base de datos
 async function initDatabase() {
@@ -164,6 +169,9 @@ async function initDatabase() {
     }
     if (!localStorage.getItem("admin_vendedores")) {
       localStorage.setItem("admin_vendedores", JSON.stringify(defaultMockVendedores));
+    }
+    if (!localStorage.getItem("admin_tokens")) {
+      localStorage.setItem("admin_tokens", JSON.stringify(defaultMockTokens));
     }
     updateConnectionBadge(true);
     initialized = true;
@@ -274,6 +282,7 @@ async function loadInitialData() {
       allProducts = JSON.parse(localStorage.getItem("admin_productos") || "[]");
       allCategories = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
       allSellers = JSON.parse(localStorage.getItem("admin_vendedores") || "[]");
+      allTokens = JSON.parse(localStorage.getItem("admin_tokens") || "[]");
     } else {
       // Productos
       console.log("DIAGNOSTIC: About to call collection(db). db is:", db);
@@ -336,6 +345,26 @@ async function loadInitialData() {
         });
       });
       if (allSellers.length === 0) allSellers = defaultMockVendedores;
+
+      // Tokens / Enlaces únicos de Clientes
+      try {
+        const tokensSnap = await getDocs(collection(db, "tokens"));
+        allTokens = [];
+        tokensSnap.forEach(doc => {
+          const data = doc.data();
+          allTokens.push({
+            id: doc.id,
+            clientName: data.client_name || data.cliente_nombre || 'Cliente',
+            vendedorId: data.vendedor_id || '',
+            deviceId: data.device_id || '',
+            estado: data.estado || 'inactive',
+            fechaCreacion: data.fecha_creacion ? (data.fecha_creacion.toDate ? data.fecha_creacion.toDate().toISOString() : data.fecha_creacion) : ''
+          });
+        });
+      } catch (err) {
+        console.warn("No se pudo cargar la colección de tokens (puede que no exista en Firestore aún):", err);
+        allTokens = [];
+      }
     }
 
     renderDashboardStats();
@@ -343,6 +372,7 @@ async function loadInitialData() {
     renderProductsTable();
     renderCategoriesGrid();
     renderSellersGrid();
+    renderTokensTable();
   } catch (error) {
     console.error("Error cargando base de datos:", error);
     document.getElementById("db-error-alert").classList.remove("hidden");
@@ -658,13 +688,13 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
 // 🔀 NAVEGACIÓN SIDEBAR
 // ==========================================
 function switchSection(sectionId, activeBtnId) {
-  const sections = ["section-dashboard", "section-products", "section-categories", "section-sellers"];
+  const sections = ["section-dashboard", "section-products", "section-categories", "section-sellers", "section-tokens"];
   sections.forEach(s => {
     document.getElementById(s).classList.add("hidden");
   });
   document.getElementById(sectionId).classList.remove("hidden");
 
-  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-categories", "nav-btn-sellers"];
+  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-categories", "nav-btn-sellers", "nav-btn-tokens"];
   navButtons.forEach(btnId => {
     const btn = document.getElementById(btnId);
     if (btnId === activeBtnId) {
@@ -679,6 +709,10 @@ document.getElementById("nav-btn-dashboard").addEventListener("click", () => swi
 document.getElementById("nav-btn-products").addEventListener("click", () => switchSection("section-products", "nav-btn-products"));
 document.getElementById("nav-btn-categories").addEventListener("click", () => switchSection("section-categories", "nav-btn-categories"));
 document.getElementById("nav-btn-sellers").addEventListener("click", () => switchSection("section-sellers", "nav-btn-sellers"));
+document.getElementById("nav-btn-tokens").addEventListener("click", () => {
+  switchSection("section-tokens", "nav-btn-tokens");
+  renderTokensTable();
+});
 
 
 // ==========================================
@@ -1508,16 +1542,176 @@ startImportBtn.addEventListener("click", async () => {
   
   alert(`Carga Masiva Completada:\n- Productos importados: ${successCount} de ${total}.\n- Categorías nuevas creadas: ${categoriesCreated}.`);
   
-  // Desbloquear controles
-  startImportBtn.removeAttribute("disabled");
-  cancelImportBtn.removeAttribute("disabled");
-  cancelImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
-  closeImportBtn.removeAttribute("disabled");
-  closeImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
+// ==========================================
+// 🔗 CRUD: ENLACES DE CLIENTES (TOKENS)
+// ==========================================
+const tokenModal = document.getElementById("token-modal");
+
+function renderTokensTable() {
+  const tableBody = document.getElementById("tokens-table-body");
+  const noTokensView = document.getElementById("no-tokens-view");
   
-  closeBulkModal();
+  if (!tableBody) return;
+  tableBody.innerHTML = "";
+
+  if (allTokens.length === 0) {
+    noTokensView.classList.remove("hidden");
+    return;
+  }
+  noTokensView.classList.add("hidden");
+
+  // Base domain detection: handles local testing and production deployment automatically
+  const baseDomain = window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1") || window.location.origin.includes("::1")
+    ? "http://localhost:8081"
+    : window.location.origin;
+
+  allTokens.forEach(t => {
+    const seller = allSellers.find(s => s.id === t.vendedorId) || { nombre: t.vendedorId || "General" };
+    
+    // Generate the unique link
+    const linkUrl = `${baseDomain}/?vendedorID=${t.vendedorId}&token=${t.id}`;
+
+    // Status badge styling
+    let statusBadge = "";
+    if (t.estado === "active") {
+      statusBadge = `<span class="px-2 py-1 bg-emerald-500/15 text-emerald-400 rounded-full text-[10px] font-bold border border-emerald-500/20">Activo (Vinculado)</span>`;
+    } else if (t.estado === "used") {
+      statusBadge = `<span class="px-2 py-1 bg-red-500/15 text-red-400 rounded-full text-[10px] font-bold border border-red-500/20">Usado</span>`;
+    } else {
+      statusBadge = `<span class="px-2 py-1 bg-slate-500/15 text-slate-400 rounded-full text-[10px] font-bold border border-white/5">Pendiente (Sin abrir)</span>`;
+    }
+
+    const deviceText = t.deviceId 
+      ? `<span class="text-xs font-mono text-slate-400 bg-slate-900/60 px-2 py-1 rounded border border-white/5">${t.deviceId.substring(0, 8)}...</span>` 
+      : `<span class="text-xs text-slate-500 italic">No vinculado</span>`;
+
+    const row = document.createElement("tr");
+    row.className = "border-b border-white/5 hover:bg-white/[0.02] text-sm text-slate-300 transition-all";
+    row.innerHTML = `
+      <td class="py-4 px-6 font-semibold text-white">${t.clientName}</td>
+      <td class="py-4 px-6">${seller.nombre}</td>
+      <td class="py-4 px-6">
+        <div class="flex items-center gap-2 max-w-xs sm:max-w-sm lg:max-w-md">
+          <input type="text" readonly value="${linkUrl}" class="flex-1 text-xs font-mono bg-slate-900/40 border border-white/5 py-1 px-2.5 rounded-lg text-slate-400 outline-none select-all">
+          <button onclick="navigator.clipboard.writeText('${linkUrl}').then(() => alert('Enlace copiado al portapapeles'))" class="p-1.5 bg-slate-800 hover:bg-emerald-500 hover:text-white rounded-lg text-slate-400 border border-white/5 transition-all" title="Copiar Enlace">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </button>
+        </div>
+      </td>
+      <td class="py-4 px-6">${deviceText}</td>
+      <td class="py-4 px-6">${statusBadge}</td>
+      <td class="py-4 px-6 text-center">
+        <button onclick="window.deleteToken('${t.id}')" class="p-2 bg-slate-800/40 hover:bg-red-500/10 hover:text-red-400 rounded-xl border border-white/5 transition-all text-slate-400" title="Eliminar Enlace">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+        </button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function openTokenModal() {
+  document.getElementById("token-form").reset();
+  document.getElementById("generated-link-container").classList.add("hidden");
+  
+  // Populate sellers dropdown
+  const sellerSelect = document.getElementById("token-seller-id");
+  if (sellerSelect) {
+    sellerSelect.innerHTML = "";
+    allSellers.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.id;
+      opt.innerText = s.nombre;
+      sellerSelect.appendChild(opt);
+    });
+  }
+
+  tokenModal.classList.remove("hidden");
+}
+
+function closeTokenModal() {
+  tokenModal.classList.add("hidden");
+}
+
+document.getElementById("add-token-btn").addEventListener("click", openTokenModal);
+document.getElementById("close-token-modal-btn").addEventListener("click", closeTokenModal);
+document.getElementById("cancel-token-modal-btn").addEventListener("click", closeTokenModal);
+
+// Handle token generation form submit
+document.getElementById("token-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const clientName = document.getElementById("token-client-name").value.trim();
+  const sellerId = document.getElementById("token-seller-id").value;
+  const tokenId = "t_" + Math.random().toString(36).substring(2, 11);
+
+  // Generate link URL
+  const baseDomain = window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1") || window.location.origin.includes("::1")
+    ? "http://localhost:8081"
+    : window.location.origin;
+  const linkUrl = `${baseDomain}/?vendedorID=${sellerId}&token=${tokenId}`;
+
+  if (useMock) {
+    let localTokens = JSON.parse(localStorage.getItem("admin_tokens") || "[]");
+    localTokens.push({
+      id: tokenId,
+      clientName: clientName,
+      vendedorId: sellerId,
+      deviceId: "",
+      estado: "inactive",
+      fechaCreacion: new Date().toISOString()
+    });
+    localStorage.setItem("admin_tokens", JSON.stringify(localTokens));
+  } else {
+    try {
+      await setDoc(doc(db, "tokens", tokenId), {
+        client_name: clientName,
+        vendedor_id: sellerId,
+        device_id: "",
+        estado: "inactive",
+        fecha_creacion: new Date()
+      });
+    } catch (err) {
+      console.error("Error al guardar token en Firestore:", err);
+      alert("Error al guardar el enlace único en la base de datos.");
+      return;
+    }
+  }
+
+  // Display generated link to user
+  const linkInput = document.getElementById("generated-link-input");
+  linkInput.value = linkUrl;
+  
+  const copyBtn = document.getElementById("copy-link-btn");
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(linkUrl).then(() => {
+      alert("Enlace copiado al portapapeles con éxito.");
+    });
+  };
+
+  document.getElementById("generated-link-container").classList.remove("hidden");
   loadInitialData();
 });
+
+// Delete Token
+window.deleteToken = async function(tokenId) {
+  if (!confirm(`¿Estás seguro de que deseas eliminar este enlace de cliente?`)) return;
+
+  if (useMock) {
+    let localTokens = JSON.parse(localStorage.getItem("admin_tokens") || "[]");
+    localTokens = localTokens.filter(t => t.id !== tokenId);
+    localStorage.setItem("admin_tokens", JSON.stringify(localTokens));
+    loadInitialData();
+  } else {
+    try {
+      await deleteDoc(doc(db, "tokens", tokenId));
+      loadInitialData();
+    } catch (err) {
+      console.error("Error al eliminar token de Firestore:", err);
+      alert("Error al eliminar el enlace único en la base de datos.");
+    }
+  }
+};
 
 // Inicialización del script
 window.addEventListener("DOMContentLoaded", () => {

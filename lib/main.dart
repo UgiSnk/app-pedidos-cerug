@@ -7,6 +7,8 @@ import 'index.dart';
 import 'backend/backend.dart';
 import 'firebase_options.dart';
 
+import 'components/token_validator_widget.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -33,6 +35,7 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final rawPage = state.uri.queryParameters['page'] ?? 'HomePage';
         final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_component';
+        final token = state.uri.queryParameters['token'];
         
         String initialPage = 'HomePage';
         if (rawPage == 'CartPage' || rawPage == 'Carrito' || rawPage == 'cart' || rawPage == 'carrito') {
@@ -46,7 +49,11 @@ final GoRouter _router = GoRouter(
           targetPage = const CartPageWidget();
         }
         
-        return NavBarPage(initialPage: initialPage, page: targetPage, vendedorID: vendedorID);
+        return TokenValidatorWidget(
+          token: token,
+          vendedorID: vendedorID,
+          child: NavBarPage(initialPage: initialPage, page: targetPage, vendedorID: vendedorID),
+        );
       },
     ),
     GoRoute(
@@ -55,7 +62,12 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_component';
         final categoriaRef = state.uri.queryParameters['categoriaRef'] ?? '';
-        return ProductsPageWidget(vendedorID: vendedorID, categoriaRef: categoriaRef);
+        final token = state.uri.queryParameters['token'];
+        return TokenValidatorWidget(
+          token: token,
+          vendedorID: vendedorID,
+          child: ProductsPageWidget(vendedorID: vendedorID, categoriaRef: categoriaRef),
+        );
       },
     ),
     GoRoute(
@@ -65,10 +77,14 @@ final GoRouter _router = GoRouter(
         final productoDoc = state.extra is Map<String, dynamic>
             ? (state.extra as Map<String, dynamic>)['productoDoc'] as ProductosRecord?
             : state.extra as ProductosRecord?;
+        final token = state.uri.queryParameters['token'];
         if (productoDoc == null) {
           return const Scaffold(body: Center(child: Text('Error loading product details')));
         }
-        return ProductDetailPageWidget(productoDoc: productoDoc);
+        return TokenValidatorWidget(
+          token: token,
+          child: ProductDetailPageWidget(productoDoc: productoDoc),
+        );
       },
     ),
   ],
