@@ -24,6 +24,8 @@ class TokenValidatorWidget extends StatefulWidget {
 
 class _TokenValidatorWidgetState extends State<TokenValidatorWidget> {
   static bool _sessionVerified = false;
+  // Set to true to bypass token validation completely, allowing direct access via ?vendedorID=
+  static const bool _bypassValidation = true;
   
   bool _isLoading = true;
   bool _isValid = false;
@@ -32,7 +34,12 @@ class _TokenValidatorWidgetState extends State<TokenValidatorWidget> {
   @override
   void initState() {
     super.initState();
-    _validateToken();
+    if (_bypassValidation) {
+      _isLoading = false;
+      _isValid = true;
+    } else {
+      _validateToken();
+    }
   }
 
   Future<String> _getOrCreateDeviceId() async {
@@ -161,6 +168,9 @@ class _TokenValidatorWidgetState extends State<TokenValidatorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (_bypassValidation) {
+      return widget.child;
+    }
     if (_isLoading) {
       return Scaffold(
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
