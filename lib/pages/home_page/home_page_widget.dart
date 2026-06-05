@@ -163,10 +163,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: Text(
-                            valueOrDefault<String>(
+                            'Vendedor: ${valueOrDefault<String>(
                               homePageVendedoresRecord.nombre,
                               'Vendedor',
-                            ),
+                            )}',
                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.vollkornSc(
                                     fontWeight: FontWeight.bold,
