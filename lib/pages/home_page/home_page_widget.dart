@@ -240,20 +240,19 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                 ),
                                 child: Stack(
                                   children: [
-                                    Align(
-                                      alignment: const AlignmentDirectional(0, 0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
+                                    // 1. Imagen con filtro Sepia desaturado
+                                    Positioned.fill(
+                                      child: ColorFiltered(
+                                        colorFilter: const ColorFilter.matrix(<double>[
+                                          0.393 * 0.85 + 0.1, 0.769 * 0.85, 0.189 * 0.85, 0, 0,
+                                          0.349 * 0.85, 0.686 * 0.85 + 0.1, 0.168 * 0.85, 0, 0,
+                                          0.272 * 0.85, 0.534 * 0.85, 0.131 * 0.85 + 0.05, 0, 0,
+                                          0, 0, 0, 1, 0,
+                                        ]),
                                         child: Image.network(
                                           gridViewCategoriasRecord.imagen,
-                                          width:
-                                              MediaQuery.sizeOf(context).width,
-                                          height:
-                                              MediaQuery.sizeOf(context).height,
                                           fit: BoxFit.cover,
                                           errorBuilder: (context, error, stackTrace) => Container(
-                                            width: MediaQuery.sizeOf(context).width,
-                                            height: MediaQuery.sizeOf(context).height,
                                             color: FlutterFlowTheme.of(context).alternate,
                                             child: Icon(
                                               Icons.image_not_supported_outlined,
@@ -264,34 +263,55 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         ),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: const AlignmentDirectional(0, 1),
-                                      child: Text(
-                                        gridViewCategoriasRecord.nombre,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.vollkornSc(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              color: const Color(0xFFF2EFEF),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
+                                    // 2. Capa de oscurecimiento con tono marrón/dorado cálido
+                                    Positioned.fill(
+                                      child: Container(
+                                        color: const Color(0xFF373126).withOpacity(0.4),
+                                      ),
+                                    ),
+                                    // 3. Doble borde blanco fino interior
+                                    Positioned.fill(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.white.withOpacity(0.9),
+                                              width: 1.0,
                                             ),
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          padding: const EdgeInsets.all(3.0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.white.withOpacity(0.9),
+                                                width: 1.0,
+                                              ),
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // 4. Texto del título centrado y en Lora negrita
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: Text(
+                                          gridViewCategoriasRecord.nombre.toUpperCase(),
+                                          textAlign: TextAlign.center,
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .override(
+                                                font: GoogleFonts.lora(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                  letterSpacing: 1.5,
+                                                ),
+                                                color: Colors.white,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ],
