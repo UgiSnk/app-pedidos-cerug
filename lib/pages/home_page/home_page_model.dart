@@ -4,9 +4,19 @@ import 'home_page_widget.dart' show HomePageWidget;
 import 'package:flutter/material.dart';
 
 class HomePageModel extends FlutterFlowModel<HomePageWidget> {
-  @override
-  void initState(BuildContext context) {}
+  // State fields for Search Bar.
+  FocusNode? searchFocusNode;
+  TextEditingController? searchController;
 
   @override
-  void dispose() {}
+  void initState(BuildContext context) {
+    searchFocusNode = FocusNode();
+    searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    searchFocusNode?.dispose();
+    searchController?.dispose();
+  }
 }
