@@ -1542,6 +1542,17 @@ startImportBtn.addEventListener("click", async () => {
   
   alert(`Carga Masiva Completada:\n- Productos importados: ${successCount} de ${total}.\n- Categorías nuevas creadas: ${categoriesCreated}.`);
   
+  // Desbloquear controles
+  startImportBtn.removeAttribute("disabled");
+  cancelImportBtn.removeAttribute("disabled");
+  cancelImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
+  closeImportBtn.removeAttribute("disabled");
+  closeImportBtn.classList.remove("opacity-50", "cursor-not-allowed");
+  
+  closeBulkModal();
+  loadInitialData();
+});
+
 // ==========================================
 // 🔗 CRUD: ENLACES DE CLIENTES (TOKENS)
 // ==========================================
