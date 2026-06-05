@@ -99,6 +99,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: AppBar(
               backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
               automaticallyImplyLeading: false,
               title: Image.asset(
                 'assets/images/logo.png',
@@ -115,7 +116,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               ),
               actions: const [],
               centerTitle: true,
-              elevation: 1,
+              elevation: 0,
               toolbarHeight: 88.0,
             ),
             body: SafeArea(
