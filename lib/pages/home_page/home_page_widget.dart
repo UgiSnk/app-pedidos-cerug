@@ -80,14 +80,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           return Container();
         }
         final targetVendedorId = widget.vendedorID ?? 'vendedor_component';
+        debugPrint('HOMEPAGE_DEBUG: targetVendedorId=$targetVendedorId');
+        debugPrint('HOMEPAGE_DEBUG: list=${homePageVendedoresRecordList.map((v) => "${v.id}:${v.nombre}").toList()}');
         VendedoresRecord? homePageVendedoresRecord;
         try {
           homePageVendedoresRecord = homePageVendedoresRecordList.firstWhere(
             (v) => v.id == targetVendedorId || v.vendedorId == targetVendedorId,
           );
         } catch (_) {
+          debugPrint('HOMEPAGE_DEBUG: Match failed, falling back to first.');
           homePageVendedoresRecord = homePageVendedoresRecordList.first;
         }
+
 
         return GestureDetector(
           onTap: () {
