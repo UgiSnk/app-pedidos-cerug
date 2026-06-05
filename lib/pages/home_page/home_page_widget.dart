@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 export 'home_page_model.dart';
 
@@ -298,9 +299,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                     Center(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: Text(
+                                        child: AutoSizeText(
                                           gridViewCategoriasRecord.nombre.toUpperCase(),
                                           textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          minFontSize: 10,
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
