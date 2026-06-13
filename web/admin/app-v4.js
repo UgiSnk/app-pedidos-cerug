@@ -301,6 +301,7 @@ async function loadInitialData() {
         localStorage.setItem("admin_pedidos", JSON.stringify(allOrders));
       }
     } else {
+      localStorage.removeItem("admin_pedidos");
       // Productos
       console.log("DIAGNOSTIC: About to call collection(db). db is:", db);
       console.log("DIAGNOSTIC: db keys before collection =", db ? Object.keys(db) : "null");
