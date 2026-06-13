@@ -21,6 +21,7 @@ const loginError = document.getElementById("login-error");
 
 const clientNameTitle = document.getElementById("client-name-title");
 const orderDate = document.getElementById("order-date");
+const sellerNameTitle = document.getElementById("seller-name-title");
 const itemsList = document.getElementById("items-list");
 const orderTotal = document.getElementById("order-total");
 const orderStatusBadge = document.getElementById("order-status-badge");
@@ -81,7 +82,7 @@ async function loadOrderDetails() {
     }
     
     currentOrderData = orderSnap.data();
-    renderOrder();
+    await renderOrder();
     showScreen(orderContainer);
   } catch (err) {
     console.error("Error loading order:", err);
@@ -91,8 +92,25 @@ async function loadOrderDetails() {
 }
 
 // Renderizar Datos del Pedido
-function renderOrder() {
+async function renderOrder() {
   clientNameTitle.innerText = currentOrderData.cliente_nombre || "Cliente Sin Nombre";
+  
+  // Obtener Nombre del Vendedor
+  let sellerName = "Cargando...";
+  try {
+    const sellerId = currentOrderData.vendedor_id || "vendedor_matias";
+    const sellerRef = doc(db, "vendedores", sellerId);
+    const sellerSnap = await getDoc(sellerRef);
+    if (sellerSnap.exists()) {
+      sellerName = sellerSnap.data().nombre || sellerId;
+    } else {
+      sellerName = sellerId === "vendedor_matias" ? "Matias Cermesoni" : (sellerId === "vendedor_lucas" ? "Lucas Ugolini" : sellerId);
+    }
+  } catch (err) {
+    console.error("Error fetching seller details:", err);
+    sellerName = currentOrderData.vendedor_id || "Vendedor";
+  }
+  sellerNameTitle.innerText = `Vendedor asignado: ${sellerName}`;
   
   // Formatear Fecha
   if (currentOrderData.fecha_creacion) {
