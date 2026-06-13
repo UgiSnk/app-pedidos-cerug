@@ -92,6 +92,6 @@ String generarMensajeWhatsApp(
   message += "💰 *TOTAL A PAGAR: \$${totalOrder.toStringAsFixed(0)}*\n\n";
   message += "💬 _Por favor, confírmeme la recepción del pedido para coordinar el pago y envío. ¡Gracias!_";
 
-  // 4. URL Encoding obligatorio
-  return Uri.encodeComponent(message);
+  // 4. Retornar mensaje en texto plano
+  return message;
 }

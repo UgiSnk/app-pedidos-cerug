@@ -189,14 +189,24 @@ confirmBtn.addEventListener("click", async () => {
       
       const items = orderData.items || [];
       for (let item of items) {
-        if (item.producto_ref) {
-          const prodSnap = await transaction.get(item.producto_ref);
+        let prodRef = item.producto_ref;
+        if (!prodRef && item.producto_path) {
+          prodRef = doc(db, item.producto_path);
+        } else if (!prodRef && item.producto_id) {
+          prodRef = doc(db, "productos", item.producto_id);
+        } else if (!prodRef && item.nombre) {
+          const guessId = item.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+          prodRef = doc(db, "productos", guessId);
+        }
+
+        if (prodRef) {
+          const prodSnap = await transaction.get(prodRef);
           if (prodSnap.exists()) {
             const prodData = prodSnap.data();
             if (prodData.control_stock === true) {
               const currentStock = Number(prodData.stock || 0);
               const newStock = currentStock - Number(item.cantidad || 0);
-              transaction.update(item.producto_ref, { stock: newStock < 0 ? 0 : newStock });
+              transaction.update(prodRef, { stock: newStock < 0 ? 0 : newStock });
             }
           }
         }

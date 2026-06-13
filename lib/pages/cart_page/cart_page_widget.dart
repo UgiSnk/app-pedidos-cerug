@@ -347,6 +347,8 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                 'producto_ref': (item.productoRef != null && isFirebaseInitialized)
                                                     ? FirebaseFirestore.instance.doc(item.productoRef!.path)
                                                     : null,
+                                                'producto_id': item.productoRef?.id,
+                                                'producto_path': item.productoRef?.path,
                                               };
                                             }).toList();
 
@@ -379,7 +381,9 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                             final rawPhone = vendedor?.telefono ?? '5491173564074';
                                             final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
                                             final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
-                                            final waUrl = 'https://wa.me/$telefonoDestino?text=$message';
+                                            final waUrl = Uri.https('wa.me', '/$telefonoDestino', {
+                                              'text': message,
+                                            }).toString();
 
                                             await launchURL(waUrl);
                                           }
