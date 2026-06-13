@@ -3,7 +3,7 @@
     "rules": "firestore.rules"
   },
   "hosting": {
-    "site": "pedidos-component",
+    "site": "pedidos-ropa-cerug",
     "public": "build/web",
     "ignore": [
       "firebase.json",
