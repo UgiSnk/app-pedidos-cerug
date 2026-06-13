@@ -109,18 +109,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               backgroundColor: Colors.white,
               surfaceTintColor: Colors.transparent,
               automaticallyImplyLeading: false,
-              title: Image.asset(
-                'assets/images/logo.png',
-                height: 68,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => Text(
-                  'Component',
-                  style: FlutterFlowTheme.of(context).headlineMedium.override(
-                        font: GoogleFonts.lora(),
-                        color: const Color(0xFF111111),
-                        fontSize: 22,
+              title: Text(
+                'CERUG',
+                style: FlutterFlowTheme.of(context).headlineMedium.override(
+                      font: GoogleFonts.lora(
+                        fontWeight: FontWeight.bold,
                       ),
-                ),
+                      color: const Color(0xFF111111),
+                      fontSize: 24,
+                      letterSpacing: 2.0,
+                    ),
               ),
               actions: const [],
               centerTitle: true,

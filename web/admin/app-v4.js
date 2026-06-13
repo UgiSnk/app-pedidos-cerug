@@ -136,7 +136,7 @@ const defaultMockCategorias = [
 ];
 
 const defaultMockVendedores = [
-  { id: 'vendedor_matias', nombre: 'Matias Cermesoni', telefono: '5491100000000', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' },
+  { id: 'vendedor_matias', nombre: 'Matias Cermesoni', telefono: '5491168058852', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' },
   { id: 'vendedor_lucas', nombre: 'Lucas Ugolini', telefono: '5491173564074', miniatura: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' }
 ];
 

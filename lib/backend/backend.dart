@@ -149,7 +149,7 @@ final List<VendedoresRecord> mockVendedores = [
     id: 'vendedor_matias',
     nombre: 'Matias Cermesoni',
     miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
-    telefono: '5491100000000',
+    telefono: '5491168058852',
     vendedorId: 'vendedor_matias',
   ),
   VendedoresRecord(
