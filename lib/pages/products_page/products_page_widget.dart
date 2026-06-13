@@ -130,11 +130,9 @@ class _ProductsPageWidgetState extends State<ProductsPageWidget> {
                   }
                   List<ProductosRecord> listViewProductosRecordList =
                       snapshot.data!;
-                  if (!isFirebaseInitialized) {
-                    listViewProductosRecordList = listViewProductosRecordList
-                        .where((p) => p.categoriaId == widget.categoriaRef)
-                        .toList();
-                  }
+                  listViewProductosRecordList = listViewProductosRecordList
+                      .where((p) => p.categoriaId == widget.categoriaRef)
+                      .toList();
 
                   return ListView.builder(
                     padding: EdgeInsets.zero,

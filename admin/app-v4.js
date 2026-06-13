@@ -405,11 +405,11 @@ async function loadInitialData() {
           });
         });
         if (allOrders.length === 0) {
-          allOrders = JSON.parse(JSON.stringify(defaultMockPedidos));
+          allOrders = [];
         }
       } catch (err) {
         console.warn("No se pudo cargar la colección de pedidos:", err);
-        allOrders = JSON.parse(JSON.stringify(defaultMockPedidos));
+        allOrders = [];
       }
     }
 

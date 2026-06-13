@@ -379,7 +379,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                             final rawPhone = vendedor?.telefono ?? '5491173564074';
                                             final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
                                             final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
-                                            final waUrl = 'https://wa.me/$telefonoDestino?text=${Uri.encodeComponent(message)}';
+                                            final waUrl = 'https://wa.me/$telefonoDestino?text=$message';
 
                                             await launchURL(waUrl);
                                           }
