@@ -203,6 +203,12 @@
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
           <span>Enlaces de Clientes</span>
         </button>
+
+        <button id="nav-btn-orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-white/5 hover:text-white transition-all text-sm font-medium">
+          <!-- Icono de Caja / Pedidos SVG -->
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          <span>Pedidos Recibidos</span>
+        </button>
       </aside>
 
       <!-- SECCIONES DE CONTENIDO -->
@@ -331,6 +337,7 @@
                     <th class="py-4 px-6">Código</th>
                     <th class="py-4 px-6">Categoría</th>
                     <th class="py-4 px-6">Precio</th>
+                    <th class="py-4 px-6">Stock</th>
                     <th class="py-4 px-6">Descripción</th>
                     <th class="py-4 px-6 text-center">Acciones</th>
                   </tr>
@@ -441,6 +448,47 @@
           </div>
         </section>
 
+        <!-- ==============================
+             📦 SECTION F: ORDERS MANAGEMENT
+             ============================== -->
+        <section id="section-orders" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <div>
+              <h2 class="text-3xl font-bold text-white tracking-wide">Pedidos Recibidos</h2>
+              <p class="text-slate-400 text-sm mt-1">Revisa y gestiona las solicitudes de compras de tus clientes.</p>
+            </div>
+          </div>
+
+          <!-- Tabla de Pedidos -->
+          <div class="glass-container rounded-2xl overflow-hidden border border-white/5 shadow-xl">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse custom-table">
+                <thead>
+                  <tr class="text-slate-400 text-xs font-semibold uppercase">
+                    <th class="py-4 px-6">Cliente</th>
+                    <th class="py-4 px-6">Vendedor</th>
+                    <th class="py-4 px-6">Fecha</th>
+                    <th class="py-4 px-6">Productos / Detalle</th>
+                    <th class="py-4 px-6">Total</th>
+                    <th class="py-4 px-6">Estado</th>
+                    <th class="py-4 px-6 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                  <!-- Carga dinámica de filas por JS -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Estado Vacío -->
+            <div id="no-orders-view" class="hidden py-16 text-center space-y-4">
+              <svg class="h-12 w-12 text-slate-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+              <h3 class="text-slate-300 font-bold">No hay pedidos recibidos</h3>
+              <p class="text-slate-500 text-xs">Los pedidos realizados por tus clientes aparecerán aquí automáticamente.</p>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
 
@@ -495,6 +543,17 @@
         <div>
           <label class="block text-slate-300 text-xs font-semibold mb-1" for="product-desc">Descripción (Opcional)</label>
           <input id="product-desc" type="text" placeholder="Ej: Medida 18x10" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold mb-1" for="product-stock">Stock Disponible</label>
+            <input id="product-stock" type="number" placeholder="Ej: 50" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm" value="0">
+          </div>
+          <div class="flex items-center gap-3 pt-6">
+            <input id="product-control-stock" type="checkbox" class="h-4 w-4 rounded border-white/10 bg-slate-900 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-900 cursor-pointer" checked>
+            <label class="text-slate-300 text-xs font-semibold cursor-pointer" for="product-control-stock">Controlar Stock</label>
+          </div>
         </div>
 
         <!-- Carga de Imagen -->
@@ -563,7 +622,7 @@
         
         <div>
           <label class="block text-slate-300 text-xs font-semibold mb-1" for="category-name">Nombre de la Categoría</label>
-          <input id="category-name" type="text" placeholder="Ej: Adornos" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm" required>
+          <input id="category-name" type="text" placeholder="Ej: Remeras" class="w-full glass-input py-2.5 px-3.5 rounded-xl text-sm" required>
         </div>
 
         <!-- Carga de Imagen -->

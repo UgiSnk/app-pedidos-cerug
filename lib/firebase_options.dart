@@ -30,29 +30,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
-    appId: '1:308853230269:web:0a8905528009fc15aa85d4',
-    messagingSenderId: '308853230269',
-    projectId: 'app-pedidos-component-63dcf',
-    authDomain: 'app-pedidos-component-63dcf.firebaseapp.com',
-    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
-    measurementId: 'G-SFC61VSFJ9',
+    apiKey: 'AIzaSyCR7yuo3I_a-QsWyitqoB3WWQAwa6Bc1zQ',
+    appId: '1:399605296427:web:ff30364b8fe8d208c3696e',
+    messagingSenderId: '399605296427',
+    projectId: 'pedidos-ropa-cerug',
+    authDomain: 'pedidos-ropa-cerug.firebaseapp.com',
+    storageBucket: 'pedidos-ropa-cerug.firebasestorage.app',
+    measurementId: 'G-RP44ZSJ4PS',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
-    appId: '1:308853230269:android:0a8905528009fc15aa85d4', // Generado usando la misma clave de la web
-    messagingSenderId: '308853230269',
-    projectId: 'app-pedidos-component-63dcf',
-    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
+    apiKey: 'AIzaSyCR7yuo3I_a-QsWyitqoB3WWQAwa6Bc1zQ',
+    appId: '1:399605296427:android:ff30364b8fe8d208c3696e',
+    messagingSenderId: '399605296427',
+    projectId: 'pedidos-ropa-cerug',
+    storageBucket: 'pedidos-ropa-cerug.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDhRrSjQja8k9Vj2IJXQcI-MHjPFP7HfrA',
-    appId: '1:308853230269:ios:0a8905528009fc15aa85d4',
-    messagingSenderId: '308853230269',
-    projectId: 'app-pedidos-component-63dcf',
-    storageBucket: 'app-pedidos-component-63dcf.firebasestorage.app',
-    iosBundleId: 'com.mycompany.componentpedidos',
+    apiKey: 'AIzaSyCR7yuo3I_a-QsWyitqoB3WWQAwa6Bc1zQ',
+    appId: '1:399605296427:ios:ff30364b8fe8d208c3696e',
+    messagingSenderId: '399605296427',
+    projectId: 'pedidos-ropa-cerug',
+    storageBucket: 'pedidos-ropa-cerug.firebasestorage.app',
+    iosBundleId: 'com.mycompany.pedidosropamatias',
   );
 }

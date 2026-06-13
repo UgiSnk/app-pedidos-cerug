@@ -1,5 +1,5 @@
-name: component_pedidos
-description: A new Flutter project.
+name: pedidos_ropa_matias
+description: A new Flutter project for Matias Cermesoni.
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

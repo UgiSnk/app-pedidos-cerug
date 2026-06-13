@@ -5,16 +5,20 @@ import '/backend/schema/structs/index.dart';
 
 int buscarIndiceProducto(
   List<ItemCarritoStruct> listaCarrito,
-  DocumentReference productoRef,
-) {
+  DocumentReference productoRef, [
+  String talle = '',
+  String color = '',
+]) {
   // Si la lista está vacía, evitamos recorrerla y devolvemos -1 directamente
   if (listaCarrito.isEmpty) {
     return -1;
   }
 
-  // Recorremos el carrito buscando el producto
+  // Recorremos el carrito buscando el producto con el mismo talle y color
   for (int i = 0; i < listaCarrito.length; i++) {
-    if (listaCarrito[i].productoRef?.path == productoRef.path) {
+    if (listaCarrito[i].productoRef?.path == productoRef.path &&
+        listaCarrito[i].talle == talle &&
+        listaCarrito[i].color == color) {
       return i; // Devolvemos el número entero del índice
     }
   }
@@ -39,12 +43,16 @@ String generarMensajeWhatsApp(
     int qty = 1;
     double price = 0.0;
     String codigo = '';
+    String talle = '';
+    String color = '';
     
     if (item is Map) {
       name = item['nombre'] ?? 'Producto';
       qty = item['cantidad'] ?? 1;
       price = (item['subtotal'] ?? ((item['precio'] ?? 0.0) * qty)).toDouble();
       codigo = item['codigo'] ?? '';
+      talle = item['talle'] ?? '';
+      color = item['color'] ?? '';
     } else {
       // Si es un struct o tipo de datos personalizado
       try {
@@ -59,10 +67,24 @@ String generarMensajeWhatsApp(
       try {
         codigo = item.codigo ?? '';
       } catch (_) {}
+      try {
+        talle = item.talle ?? '';
+      } catch (_) {}
+      try {
+        color = item.color ?? '';
+      } catch (_) {}
+    }
+    
+    String variantMsg = "";
+    if (talle.isNotEmpty || color.isNotEmpty) {
+      List<String> parts = [];
+      if (talle.isNotEmpty) parts.add("Talle: $talle");
+      if (color.isNotEmpty) parts.add("Color: $color");
+      variantMsg = " (${parts.join(', ')})";
     }
     
     String codMsg = codigo.isNotEmpty ? "[$codigo] " : "";
-    message += "• $qty x $codMsg*$name* - \$${price.toStringAsFixed(0)}\n";
+    message += "• $qty x $codMsg*$name*$variantMsg - \$${price.toStringAsFixed(0)}\n";
   }
 
   // 3. Cierre y Total

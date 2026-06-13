@@ -4,7 +4,7 @@
 
 import { firebaseConfig, isMockMode } from "./config.js?v=1.6";
 import { initializeApp as fbInitializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore as fbGetFirestore, collection as fbCollection, getDocs as fbGetDocs, doc as fbDoc, setDoc as fbSetDoc, deleteDoc as fbDeleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore as fbGetFirestore, collection as fbCollection, getDocs as fbGetDocs, doc as fbDoc, setDoc as fbSetDoc, deleteDoc as fbDeleteDoc, runTransaction as fbRunTransaction, getDoc as fbGetDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { getStorage as fbGetStorage, ref as fbRef, uploadBytes as fbUploadBytes, getDownloadURL as fbGetDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import { getAuth as fbGetAuth, signInWithEmailAndPassword as fbSignInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged as fbOnAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -40,6 +40,14 @@ function setDoc(docRef, data) {
 
 function deleteDoc(docRef) {
   return fbDeleteDoc(docRef);
+}
+
+function runTransaction(db, updateFunction) {
+  return fbRunTransaction(db, updateFunction);
+}
+
+function getDoc(docRef) {
+  return fbGetDoc(docRef);
 }
 
 function getStorage(app) {
@@ -116,39 +124,39 @@ function restoreFirebaseRefs() {
 
 // Datos Simulados por Defecto (Mock Data)
 const defaultMockProductos = [
-  { id: 'Vela-Grande-Blanco', nombre: 'Vela Grande Blanco', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-BL' },
-  { id: 'Vela-Grande-Negro', nombre: 'Vela Grande Negro', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-NE' },
-  { id: 'Vela-Grande-Verde', nombre: 'Vela Grande Verde', precio: 22000, foto: 'https://lh3.googleusercontent.com/d/13beVbgzBrbxs3INV-852e37rsnkzsFW-', categoria_id: 'Velas', descripcion: 'Medida 18x10', codigo: 'VEL-GR-VE' },
-  { id: 'Vela-XL-Blanco', nombre: 'Vela XL Blanco', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1ZyGz0Cymz-1jupj0mMTj8zVpOBt7QY_C', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-BL' },
-  { id: 'Vela-XL-Negro', nombre: 'Vela XL Negro', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1MDjZsrFP_BBMzb6HzbdPOWkzoSG0ard0', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-NE' },
-  { id: 'Vela-XL-Verde', nombre: 'Vela XL Verde', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1DMnd1n4iJKvbZk6S4GN6Xq0NJ8RIfByc', categoria_id: 'Velas', descripcion: 'Medida 25x10', codigo: 'VEL-XL-VE' },
-  { id: 'Vela-XXL-Blanco', nombre: 'Vela XXL Blanco', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-BL' },
-  { id: 'Vela-XXL-Negro', nombre: 'Vela XXL Negro', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1IDQVzbuaUoHKwUtOf0PZNRmsdAoKvShG', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-NE' },
-  { id: 'Vela-XXL-Verde', nombre: 'Vela XXL Verde', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1WAKDunDwINTxXP_ac_PQeCoaUK_sukOV', categoria_id: 'Velas', descripcion: 'Medida 15x17', codigo: 'VEL-XXL-VE' },
-  { id: 'Vaso-chico-con-vela', nombre: 'Vaso chico con vela', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática', codigo: 'VAS-CH' },
-  { id: 'Vaso-grande-con-vela', nombre: 'Vaso grande con vela', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq', categoria_id: 'Velas', descripcion: 'Aromática', codigo: 'VAS-GR' },
-  
-  { id: 'Vidrio-1', nombre: 'Vidrio 1', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/11oF3-k-tSV7FZZz9oI3RDkMrXF4VkI8b', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-01' },
-  { id: 'Vidrio-2', nombre: 'Vidrio 2', precio: 25000, foto: 'https://lh3.googleusercontent.com/d/1JN0g9JRX2A74qKVDP70hiZrsC36diV4j', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-02' },
-  { id: 'Vidrio-3', nombre: 'Vidrio 3', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1lkkB3V5tNpzJbJmrZtcUkR8FiMDtEI3H', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-03' },
-  { id: 'Vidrio-4', nombre: 'Vidrio 4', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1rTzwMQBTuWG8QMII4m2OvQXWyAKXvCCu', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-04' },
-  { id: 'Vidrio-5', nombre: 'Vidrio 5', precio: 28000, foto: 'https://lh3.googleusercontent.com/d/1h4WXu0gKNpoAraSkcGSGJS61Lp-vJ-Lh', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-05' },
-  { id: 'Vidrio-6', nombre: 'Vidrio 6', precio: 32000, foto: 'https://lh3.googleusercontent.com/d/1RE3w4WGCl8n9qj1UXUA4SZGzDQuuBWCp', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-06' },
-  { id: 'Vidrio-7', nombre: 'Vidrio 7', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1SENQbB7MMbJz5IDNsg7cXlaeNpgYXHWO', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-07' },
-  { id: 'Vidrio-8', nombre: 'Vidrio 8', precio: 50000, foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu', categoria_id: 'Vidrios', descripcion: '', codigo: 'VID-08' }
+  { id: 'zapatillas-deportivas-run', nombre: 'Zapatillas Deportivas Run', precio: 45000, foto: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500', categoria_id: 'Zapatillas', descripcion: 'Amortiguación reactiva y mesh transpirable', codigo: 'ZAP-RUN', stock: 15, control_stock: true },
+  { id: 'zapatillas-urbanas-street', nombre: 'Zapatillas Urbanas Street', precio: 52000, foto: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500', categoria_id: 'Zapatillas', descripcion: 'Diseño clásico retro en cuero sintético', codigo: 'ZAP-ST', stock: 8, control_stock: true },
+  { id: 'buzo-hoodie-over', nombre: 'Buzo Hoodie Over', precio: 38000, foto: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500', categoria_id: 'Buzos', descripcion: 'Algodón rústico oversize con capucha', codigo: 'BUZ-HO', stock: 12, control_stock: true },
+  { id: 'buzo-classic-crew', nombre: 'Buzo Classic Crew', precio: 32000, foto: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500', categoria_id: 'Buzos', descripcion: 'Cuello redondo clásico de frisa invisible', codigo: 'BUZ-CL', stock: 20, control_stock: true }
 ];
 
 const defaultMockCategorias = [
-  { id: 'Velas', nombre: 'Velas', imagen: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' },
-  { id: 'Vidrios', nombre: 'Vidrios', imagen: 'https://lh3.googleusercontent.com/d/1ebuXB_EbgPhsZefF7RiE0FRLKEAP3raC' }
+  { id: 'Zapatillas', nombre: 'Zapatillas', imagen: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500' },
+  { id: 'Buzos', nombre: 'Buzos', imagen: 'https://images.unsplash.com/photo-1608063615781-e5ef77d3cf11?w=500' }
 ];
 
 const defaultMockVendedores = [
-  { id: 'vendedor_component', nombre: 'Component New House', telefono: '5491173564074', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' }
+  { id: 'vendedor_matias', nombre: 'Matias Cermesoni', telefono: '5491100000000', miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq' },
+  { id: 'vendedor_lucas', nombre: 'Lucas Ugolini', telefono: '5491173564074', miniatura: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' }
 ];
 
 const defaultMockTokens = [
-  { id: 'token_ejemplo_pablo', clientName: 'Pablo Gómez', vendedorId: 'vendedor_component', deviceId: '', estado: 'inactive', fechaCreacion: new Date().toISOString() }
+  { id: 'token_ejemplo_pablo', clientName: 'Pablo Gómez', vendedorId: 'vendedor_lucas', deviceId: '', estado: 'inactive', fechaCreacion: new Date().toISOString() }
+];
+
+const defaultMockPedidos = [
+  {
+    id: 'pedido_ejemplo_1',
+    cliente_nombre: 'Santiago Ugolini',
+    vendedor_id: 'vendedor_lucas',
+    fecha_creacion: new Date(Date.now() - 3600000).toISOString(),
+    estado: 'Pendiente',
+    total: 83000,
+    items: [
+      { nombre: 'Zapatillas Deportivas Run', cantidad: 1, precio: 45000, subtotal: 45000, codigo: 'ZAP-RUN', talle: 'XL', color: 'Negro', producto_ref: 'productos/zapatillas-deportivas-run' },
+      { nombre: 'Buzo Hoodie Over', cantidad: 1, precio: 38000, subtotal: 38000, codigo: 'BUZ-HO', talle: 'M', color: 'Gris', producto_ref: 'productos/buzo-hoodie-over' }
+    ]
+  }
 ];
 
 // Variables globales de datos cargados
@@ -156,6 +164,7 @@ let allProducts = [];
 let allCategories = [];
 let allSellers = [];
 let allTokens = [];
+let allOrders = [];
 
 // Inicialización de base de datos
 async function initDatabase() {
@@ -172,6 +181,9 @@ async function initDatabase() {
     }
     if (!localStorage.getItem("admin_tokens")) {
       localStorage.setItem("admin_tokens", JSON.stringify(defaultMockTokens));
+    }
+    if (!localStorage.getItem("admin_pedidos")) {
+      localStorage.setItem("admin_pedidos", JSON.stringify(defaultMockPedidos));
     }
     updateConnectionBadge(true);
     initialized = true;
@@ -283,6 +295,11 @@ async function loadInitialData() {
       allCategories = JSON.parse(localStorage.getItem("admin_categorias") || "[]");
       allSellers = JSON.parse(localStorage.getItem("admin_vendedores") || "[]");
       allTokens = JSON.parse(localStorage.getItem("admin_tokens") || "[]");
+      allOrders = JSON.parse(localStorage.getItem("admin_pedidos") || "[]");
+      if (allOrders.length === 0) {
+        allOrders = JSON.parse(JSON.stringify(defaultMockPedidos));
+        localStorage.setItem("admin_pedidos", JSON.stringify(allOrders));
+      }
     } else {
       // Productos
       console.log("DIAGNOSTIC: About to call collection(db). db is:", db);
@@ -315,9 +332,14 @@ async function loadInitialData() {
           foto: data.foto || '',
           categoria_id: data.categoria_id || '',
           descripcion: data.descripcion || '',
-          codigo: data.codigo || ''
+          codigo: data.codigo || '',
+          stock: data.stock !== undefined ? Number(data.stock) : 0,
+          control_stock: data.control_stock !== undefined ? Boolean(data.control_stock) : true
         });
       });
+      if (allProducts.length === 0) {
+        allProducts = JSON.parse(JSON.stringify(defaultMockProductos));
+      }
 
       // Categorías
       const catSnap = await getDocs(collection(db, "categorias"));
@@ -330,7 +352,7 @@ async function loadInitialData() {
           imagen: data.imagen || ''
         });
       });
-      if (allCategories.length === 0) allCategories = defaultMockCategorias;
+      if (allCategories.length === 0) allCategories = JSON.parse(JSON.stringify(defaultMockCategorias));
 
       // Vendedores
       const sellerSnap = await getDocs(collection(db, "vendedores"));
@@ -365,6 +387,30 @@ async function loadInitialData() {
         console.warn("No se pudo cargar la colección de tokens (puede que no exista en Firestore aún):", err);
         allTokens = [];
       }
+
+      // Pedidos / Orders
+      try {
+        const ordersSnap = await getDocs(collection(db, "pedidos"));
+        allOrders = [];
+        ordersSnap.forEach(doc => {
+          const data = doc.data();
+          allOrders.push({
+            id: doc.id,
+            cliente_nombre: data.cliente_nombre || 'Cliente',
+            vendedor_id: data.vendedor_id || '',
+            fecha_creacion: data.fecha_creacion ? (data.fecha_creacion.toDate ? data.fecha_creacion.toDate().toISOString() : data.fecha_creacion) : new Date().toISOString(),
+            estado: data.estado || 'Pendiente',
+            total: Number(data.total || 0),
+            items: data.items || []
+          });
+        });
+        if (allOrders.length === 0) {
+          allOrders = JSON.parse(JSON.stringify(defaultMockPedidos));
+        }
+      } catch (err) {
+        console.warn("No se pudo cargar la colección de pedidos:", err);
+        allOrders = JSON.parse(JSON.stringify(defaultMockPedidos));
+      }
     }
 
     renderDashboardStats();
@@ -373,6 +419,7 @@ async function loadInitialData() {
     renderCategoriesGrid();
     renderSellersGrid();
     renderTokensTable();
+    renderOrdersTable();
   } catch (error) {
     console.error("Error cargando base de datos:", error);
     document.getElementById("db-error-alert").classList.remove("hidden");
@@ -487,6 +534,9 @@ function renderProductsTable() {
         </span>
       </td>
       <td class="py-4 px-6 font-bold text-white">$${Number(p.precio || 0).toLocaleString('es-AR')}</td>
+      <td class="py-4 px-6 text-slate-300">
+        ${p.control_stock ? `<span class="px-2 py-0.5 rounded text-xs font-semibold ${Number(p.stock || 0) <= 0 ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-slate-500/10 text-slate-300 border border-white/5'}">${p.stock || 0}</span>` : '<span class="text-slate-500 text-xs">Sin límite</span>'}
+      </td>
       <td class="py-4 px-6 text-xs text-slate-400 truncate max-w-[180px]">${p.descripcion || '-'}</td>
       <td class="py-4 px-6">
         <div class="flex justify-center gap-2">
@@ -688,13 +738,13 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
 // 🔀 NAVEGACIÓN SIDEBAR
 // ==========================================
 function switchSection(sectionId, activeBtnId) {
-  const sections = ["section-dashboard", "section-products", "section-categories", "section-sellers", "section-tokens"];
+  const sections = ["section-dashboard", "section-products", "section-categories", "section-sellers", "section-tokens", "section-orders"];
   sections.forEach(s => {
     document.getElementById(s).classList.add("hidden");
   });
   document.getElementById(sectionId).classList.remove("hidden");
 
-  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-categories", "nav-btn-sellers", "nav-btn-tokens"];
+  const navButtons = ["nav-btn-dashboard", "nav-btn-products", "nav-btn-categories", "nav-btn-sellers", "nav-btn-tokens", "nav-btn-orders"];
   navButtons.forEach(btnId => {
     const btn = document.getElementById(btnId);
     if (btnId === activeBtnId) {
@@ -712,6 +762,10 @@ document.getElementById("nav-btn-sellers").addEventListener("click", () => switc
 document.getElementById("nav-btn-tokens").addEventListener("click", () => {
   switchSection("section-tokens", "nav-btn-tokens");
   renderTokensTable();
+});
+document.getElementById("nav-btn-orders").addEventListener("click", () => {
+  switchSection("section-orders", "nav-btn-orders");
+  renderOrdersTable();
 });
 
 
@@ -751,6 +805,8 @@ function openProductModal(productId = null) {
       document.getElementById("product-desc").value = prod.descripcion;
       document.getElementById("product-img-url").value = prod.foto;
       document.getElementById("product-code").value = prod.codigo || "";
+      document.getElementById("product-stock").value = prod.stock !== undefined ? prod.stock : 0;
+      document.getElementById("product-control-stock").checked = prod.control_stock !== undefined ? prod.control_stock : true;
       
       if (prod.foto) {
         previewImg.src = prod.foto;
@@ -762,6 +818,8 @@ function openProductModal(productId = null) {
     document.getElementById("modal-title").innerText = "Agregar Producto";
     document.getElementById("product-modal-id").value = "";
     document.getElementById("product-code").value = "";
+    document.getElementById("product-stock").value = "0";
+    document.getElementById("product-control-stock").checked = true;
   }
   
   prodModal.classList.remove("hidden");
@@ -822,6 +880,8 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
   const desc = document.getElementById("product-desc").value.trim();
   const urlInput = document.getElementById("product-img-url").value.trim();
   const code = document.getElementById("product-code").value.trim();
+  const stock = Number(document.getElementById("product-stock").value || 0);
+  const controlStock = document.getElementById("product-control-stock").checked;
 
   let finalImageUrl = sanitizeImageUrl(urlInput) || "https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq";
 
@@ -849,7 +909,9 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
     foto: finalImageUrl,
     categoria_id: category,
     descripcion: desc,
-    codigo: code
+    codigo: code,
+    stock: stock,
+    control_stock: controlStock
   };
 
   if (useMock) {
@@ -1729,3 +1791,170 @@ window.addEventListener("DOMContentLoaded", () => {
   initDatabase();
   switchSection("section-dashboard", "nav-btn-dashboard");
 });
+
+// ==========================================
+// 📦 CRUD: PEDIDOS (CONFIRMACIÓN Y RENDERING)
+// ==========================================
+function renderOrdersTable() {
+  const tableBody = document.getElementById("orders-table-body");
+  const noOrdersView = document.getElementById("no-orders-view");
+  
+  if (!tableBody) return;
+  
+  tableBody.innerHTML = "";
+  
+  // Ordenar pedidos: los "Pendiente" primero, y por fecha descendente
+  const sortedOrders = [...allOrders].sort((a, b) => {
+    if (a.estado === 'Pendiente' && b.estado !== 'Pendiente') return -1;
+    if (a.estado !== 'Pendiente' && b.estado === 'Pendiente') return 1;
+    return new Date(b.fecha_creacion) - new Date(a.fecha_creacion);
+  });
+  
+  if (sortedOrders.length === 0) {
+    noOrdersView.classList.remove("hidden");
+    return;
+  } else {
+    noOrdersView.classList.add("hidden");
+  }
+  
+  sortedOrders.forEach(order => {
+    const tr = document.createElement("tr");
+    tr.className = "border-b border-white/5 hover:bg-white/5 transition-all text-sm";
+    
+    // Find seller name
+    const seller = allSellers.find(s => s.id === order.vendedor_id || s.vendedorId === order.vendedor_id);
+    const sellerName = seller ? seller.nombre : order.vendedor_id;
+    
+    // Format Date
+    let dateStr = "Sin fecha";
+    if (order.fecha_creacion) {
+      try {
+        const d = new Date(order.fecha_creacion);
+        dateStr = d.toLocaleDateString() + " " + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      } catch (e) {}
+    }
+    
+    // Build items detail html list
+    let itemsHtml = "<div class='flex flex-col gap-1 text-xs'>";
+    if (order.items && Array.isArray(order.items)) {
+      order.items.forEach(item => {
+        itemsHtml += `<div class='text-slate-300'><span class='font-bold text-emerald-400'>${item.cantidad}x</span> ${item.nombre} <span class='text-[10px] text-slate-500'>(${item.talle || 'M'} / ${item.color || 'Unico'})</span></div>`;
+      });
+    }
+    itemsHtml += "</div>";
+    
+    // Total price formatting
+    const formattedTotal = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(order.total);
+    
+    // Badge state styling
+    let statusBadge = "";
+    if (order.estado === 'Pendiente') {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">Pendiente</span>`;
+    } else {
+      statusBadge = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Entregado</span>`;
+    }
+    
+    // Action buttons
+    let actionBtnHtml = "";
+    if (order.estado === 'Pendiente') {
+      actionBtnHtml = `
+        <button onclick="confirmOrderDelivery('${order.id}')" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10 transition-all mx-auto">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span>Entregado</span>
+        </button>
+      `;
+    } else {
+      actionBtnHtml = `<span class="text-xs text-slate-500 italic text-center block">Completado</span>`;
+    }
+    
+    tr.innerHTML = `
+      <td class="py-4 px-6 text-white font-semibold">${order.cliente_nombre}</td>
+      <td class="py-4 px-6 text-slate-300">${sellerName}</td>
+      <td class="py-4 px-6 text-slate-400 text-xs">${dateStr}</td>
+      <td class="py-4 px-6">${itemsHtml}</td>
+      <td class="py-4 px-6 text-emerald-400 font-bold">${formattedTotal}</td>
+      <td class="py-4 px-6">${statusBadge}</td>
+      <td class="py-4 px-6 text-center">${actionBtnHtml}</td>
+    `;
+    
+    tableBody.appendChild(tr);
+  });
+}
+
+async function confirmOrderDelivery(orderId) {
+  if (confirm("¿Estás seguro de confirmar la entrega de este pedido? Esto descontará los productos del stock disponible.")) {
+    if (useMock) {
+      const orders = JSON.parse(localStorage.getItem("admin_pedidos") || "[]");
+      const products = JSON.parse(localStorage.getItem("admin_productos") || "[]");
+      
+      const order = orders.find(o => o.id === orderId);
+      if (order && order.estado === 'Pendiente') {
+        if (order.items && Array.isArray(order.items)) {
+          order.items.forEach(item => {
+            let prodRefPath = item.producto_ref ? (item.producto_ref.path || item.producto_ref) : null;
+            let prodId = prodRefPath ? prodRefPath.split('/').pop() : null;
+            
+            const product = products.find(p => p.id === prodId || p.codigo === item.codigo);
+            if (product && product.control_stock) {
+              const currentStock = Number(product.stock || 0);
+              const newStock = currentStock - Number(item.cantidad || 0);
+              product.stock = newStock < 0 ? 0 : newStock;
+            }
+          });
+        }
+        order.estado = 'Entregado';
+        
+        localStorage.setItem("admin_pedidos", JSON.stringify(orders));
+        localStorage.setItem("admin_productos", JSON.stringify(products));
+        
+        allOrders = orders;
+        allProducts = products;
+        
+        alert("Pedido marcado como entregado y stock descontado con éxito.");
+        renderDashboardStats();
+        renderProductsTable();
+        renderOrdersTable();
+      }
+    } else {
+      try {
+        restoreFirebaseRefs();
+        const orderRef = doc(db, "pedidos", orderId);
+        
+        await runTransaction(db, async (transaction) => {
+          const orderSnap = await transaction.get(orderRef);
+          if (!orderSnap.exists()) {
+            throw "El pedido no existe.";
+          }
+          const orderData = orderSnap.data();
+          if (orderData.estado === 'Entregado') {
+            throw "El pedido ya fue entregado.";
+          }
+          
+          const items = orderData.items || [];
+          for (let item of items) {
+            if (item.producto_ref) {
+              const prodSnap = await transaction.get(item.producto_ref);
+              if (prodSnap.exists()) {
+                const prodData = prodSnap.data();
+                if (prodData.control_stock === true) {
+                  const currentStock = Number(prodData.stock || 0);
+                  const newStock = currentStock - Number(item.cantidad || 0);
+                  transaction.update(item.producto_ref, { stock: newStock < 0 ? 0 : newStock });
+                }
+              }
+            }
+          }
+          
+          transaction.update(orderRef, { estado: 'Entregado' });
+        });
+        
+        alert("Pedido entregado y stock descontado en Firestore.");
+        await loadInitialData();
+      } catch (err) {
+        console.error("Error al confirmar entrega:", err);
+        alert("Error al confirmar entrega: " + err);
+      }
+    }
+  }
+}
+window.confirmOrderDelivery = confirmOrderDelivery;

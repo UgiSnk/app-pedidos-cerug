@@ -27,6 +27,8 @@ class ProductDetailPageWidget extends StatefulWidget {
 
 class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget> {
   late ProductDetailPageModel _model;
+  String selectedTalle = 'M';
+  String selectedColor = 'Negro';
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -182,18 +184,143 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget> {
                           FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                     ),
               ),
-              const Spacer(),
-              wrapWithModel(
-                model: _model.contadorItemModel,
-                updateCallback: () => safeSetState(() {}),
-                child: ContadorItemWidget(
-                  productoActual: widget.productoDoc!.reference,
-                  precio: widget.productoDoc!.precio,
-                  foto: widget.productoDoc!.foto,
-                  nombre: widget.productoDoc!.nombre,
-                  codigo: widget.productoDoc!.codigo,
+              const SizedBox(height: 16),
+              if (widget.productoDoc!.controlStock)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    widget.productoDoc!.stock <= 0
+                        ? '❌ AGOTADO'
+                        : '📦 Stock disponible: ${widget.productoDoc!.stock}',
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.vollkornSc(
+                            fontWeight: FontWeight.bold,
+                            color: widget.productoDoc!.stock <= 0
+                                ? Colors.red
+                                : FlutterFlowTheme.of(context).secondaryText,
+                          ),
+                        ),
+                  ),
                 ),
-              ),
+              const SizedBox(height: 16),
+              if (widget.productoDoc!.stock > 0 || !widget.productoDoc!.controlStock)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Talle',
+                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.vollkornSc(fontWeight: FontWeight.bold),
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            DropdownButtonFormField<String>(
+                              value: selectedTalle,
+                              dropdownColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              style: FlutterFlowTheme.of(context).bodyMedium,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              items: <String>['S', 'M', 'L', 'XL', 'XXL']
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                safeSetState(() {
+                                  selectedTalle = newValue ?? 'M';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Color',
+                              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.vollkornSc(fontWeight: FontWeight.bold),
+                                  ),
+                            ),
+                            const SizedBox(height: 4),
+                            DropdownButtonFormField<String>(
+                              value: selectedColor,
+                              dropdownColor: FlutterFlowTheme.of(context).secondaryBackground,
+                              style: FlutterFlowTheme.of(context).bodyMedium,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                              ),
+                              items: <String>['Negro', 'Blanco', 'Gris', 'Azul']
+                                  .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                safeSetState(() {
+                                  selectedColor = newValue ?? 'Negro';
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const Spacer(),
+              if (widget.productoDoc!.stock > 0 || !widget.productoDoc!.controlStock)
+                wrapWithModel(
+                  model: _model.contadorItemModel,
+                  updateCallback: () => safeSetState(() {}),
+                  child: ContadorItemWidget(
+                    productoActual: widget.productoDoc!.reference,
+                    precio: widget.productoDoc!.precio,
+                    foto: widget.productoDoc!.foto,
+                    nombre: widget.productoDoc!.nombre,
+                    codigo: widget.productoDoc!.codigo,
+                    talle: selectedTalle,
+                    color: selectedColor,
+                  ),
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'PRODUCTO AGOTADO',
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.vollkornSc(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

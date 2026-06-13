@@ -4,7 +4,8 @@ export 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // Helper to determine if Firebase is initialized.
-bool get isFirebaseInitialized => Firebase.apps.isNotEmpty;
+const bool forceMockMode = false;
+bool get isFirebaseInitialized => Firebase.apps.isNotEmpty && !forceMockMode;
 
 class VendedoresRecord {
   final String id;
@@ -63,6 +64,8 @@ class ProductosRecord {
   final String descripcion;
   final String codigo;
   final DocumentReference reference;
+  final int stock;
+  final bool controlStock;
 
   ProductosRecord({
     required this.id,
@@ -73,6 +76,8 @@ class ProductosRecord {
     required this.descripcion,
     required this.codigo,
     required this.reference,
+    this.stock = 0,
+    this.controlStock = false,
   });
 
   factory ProductosRecord.fromFirestore(DocumentSnapshot doc) {
@@ -86,6 +91,8 @@ class ProductosRecord {
       descripcion: data['descripcion'] ?? '',
       codigo: data['codigo'] ?? '',
       reference: doc.reference,
+      stock: data['stock'] as int? ?? 0,
+      controlStock: data['control_stock'] as bool? ?? false,
     );
   }
 }
@@ -139,220 +146,82 @@ class MockDocumentReference implements DocumentReference<Map<String, dynamic>> {
 // Mock Data definitions using Googleusercontent cache endpoint (bypasses Google Drive download block and CORS issues)
 final List<VendedoresRecord> mockVendedores = [
   VendedoresRecord(
-    id: 'vendedor_component',
-    nombre: 'Component New House',
+    id: 'vendedor_matias',
+    nombre: 'Matias Cermesoni',
     miniatura: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
+    telefono: '5491100000000',
+    vendedorId: 'vendedor_matias',
+  ),
+  VendedoresRecord(
+    id: 'vendedor_lucas',
+    nombre: 'Lucas Ugolini',
+    miniatura: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     telefono: '5491173564074',
-    vendedorId: 'vendedor_component',
+    vendedorId: 'vendedor_lucas',
   ),
 ];
 
 final List<CategoriasRecord> mockCategorias = [
   CategoriasRecord(
-    id: 'Velas',
-    nombre: 'Velas',
-    imagen: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
+    id: 'Zapatillas',
+    nombre: 'Zapatillas',
+    imagen: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500',
   ),
   CategoriasRecord(
-    id: 'Vidrios',
-    nombre: 'Vidrios',
-    imagen: 'https://lh3.googleusercontent.com/d/1ebuXB_EbgPhsZefF7RiE0FRLKEAP3raC',
+    id: 'Buzos',
+    nombre: 'Buzos',
+    imagen: 'https://images.unsplash.com/photo-1608063615781-e5ef77d3cf11?w=500',
   ),
 ];
 
 final List<ProductosRecord> mockProductos = [
-  // Category: Velas
   ProductosRecord(
-    id: 'Vela Grande Blanco',
-    nombre: 'Vela Grande Blanco',
-    precio: 22000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1ljXdhXarysJ4_MpUwdWYg9RuyAKDRjUK',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 18x10',
-    codigo: 'VEL-GR-BL',
-    reference: MockDocumentReference('Vela Grande Blanco', 'productos/Vela Grande Blanco'),
+    id: 'zapatillas-deportivas-run',
+    nombre: 'Zapatillas Deportivas Run',
+    precio: 45000.0,
+    foto: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500',
+    categoriaId: 'Zapatillas',
+    descripcion: 'Amortiguación reactiva y mesh transpirable',
+    codigo: 'ZAP-RUN',
+    stock: 15,
+    controlStock: true,
+    reference: MockDocumentReference('zapatillas-deportivas-run', 'productos/zapatillas-deportivas-run'),
   ),
   ProductosRecord(
-    id: 'Vela Grande Negro',
-    nombre: 'Vela Grande Negro',
-    precio: 22000.0,
-    foto: 'https://lh3.googleusercontent.com/d/19p6ToRtzfrPeHGZ9xZ-AD0KwfeiY3XH-',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 18x10',
-    codigo: 'VEL-GR-NE',
-    reference: MockDocumentReference('Vela Grande Negro', 'productos/Vela Grande Negro'),
+    id: 'zapatillas-urbanas-street',
+    nombre: 'Zapatillas Urbanas Street',
+    precio: 52000.0,
+    foto: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500',
+    categoriaId: 'Zapatillas',
+    descripcion: 'Diseño clásico retro en cuero sintético',
+    codigo: 'ZAP-ST',
+    stock: 8,
+    controlStock: true,
+    reference: MockDocumentReference('zapatillas-urbanas-street', 'productos/zapatillas-urbanas-street'),
   ),
   ProductosRecord(
-    id: 'Vela Grande Verde',
-    nombre: 'Vela Grande Verde',
-    precio: 22000.0,
-    foto: 'https://lh3.googleusercontent.com/d/13beVbgzBrbxs3INV-852e37rsnkzsFW-',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 18x10',
-    codigo: 'VEL-GR-VE',
-    reference: MockDocumentReference('Vela Grande Verde', 'productos/Vela Grande Verde'),
+    id: 'buzo-hoodie-over',
+    nombre: 'Buzo Hoodie Over',
+    precio: 38000.0,
+    foto: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500',
+    categoriaId: 'Buzos',
+    descripcion: 'Algodón rústico oversize con capucha',
+    codigo: 'BUZ-HO',
+    stock: 12,
+    controlStock: true,
+    reference: MockDocumentReference('buzo-hoodie-over', 'productos/buzo-hoodie-over'),
   ),
   ProductosRecord(
-    id: 'Vela XL Blanco',
-    nombre: 'Vela XL Blanco',
-    precio: 25000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1ZyGz0Cymz-1jupj0mMTj8zVpOBt7QY_C',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 25x10',
-    codigo: 'VEL-XL-BL',
-    reference: MockDocumentReference('Vela XL Blanco', 'productos/Vela XL Blanco'),
-  ),
-  ProductosRecord(
-    id: 'Vela XL Negro',
-    nombre: 'Vela XL Negro',
-    precio: 25000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1MDjZsrFP_BBMzb6HzbdPOWkzoSG0ard0',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 25x10',
-    codigo: 'VEL-XL-NE',
-    reference: MockDocumentReference('Vela XL Negro', 'productos/Vela XL Negro'),
-  ),
-  ProductosRecord(
-    id: 'Vela XL Verde',
-    nombre: 'Vela XL Verde',
-    precio: 25000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1DMnd1n4iJKvbZk6S4GN6Xq0NJ8RIfByc',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 25x10',
-    codigo: 'VEL-XL-VE',
-    reference: MockDocumentReference('Vela XL Verde', 'productos/Vela XL Verde'),
-  ),
-  ProductosRecord(
-    id: 'Vela XXL Blanco',
-    nombre: 'Vela XXL Blanco',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1KIJ9KKdaMylPUTSEVXfhjTNKB5kWgVW8',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 15x17',
-    codigo: 'VEL-XXL-BL',
-    reference: MockDocumentReference('Vela XXL Blanco', 'productos/Vela XXL Blanco'),
-  ),
-  ProductosRecord(
-    id: 'Vela XXL Negro',
-    nombre: 'Vela XXL Negro',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1IDQVzbuaUoHKwUtOf0PZNRmsdAoKvShG',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 15x17',
-    codigo: 'VEL-XXL-NE',
-    reference: MockDocumentReference('Vela XXL Negro', 'productos/Vela XXL Negro'),
-  ),
-  ProductosRecord(
-    id: 'Vela XXL Verde',
-    nombre: 'Vela XXL Verde',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1WAKDunDwINTxXP_ac_PQeCoaUK_sukOV',
-    categoriaId: 'Velas',
-    descripcion: 'Medida 15x17',
-    codigo: 'VEL-XXL-VE',
-    reference: MockDocumentReference('Vela XXL Verde', 'productos/Vela XXL Verde'),
-  ),
-  ProductosRecord(
-    id: 'Vaso chico con vela',
-    nombre: 'Vaso chico con vela',
+    id: 'buzo-classic-crew',
+    nombre: 'Buzo Classic Crew',
     precio: 32000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
-    categoriaId: 'Velas',
-    descripcion: '',
-    codigo: 'VAS-CH',
-    reference: MockDocumentReference('Vaso chico con vela', 'productos/Vaso chico con vela'),
-  ),
-  ProductosRecord(
-    id: 'Vaso grande con vela',
-    nombre: 'Vaso grande con vela',
-    precio: 50000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1bbKIYxQfnJWXDrQtKF7sxVblnhSjRkZq',
-    categoriaId: 'Velas',
-    descripcion: '',
-    codigo: 'VAS-GR',
-    reference: MockDocumentReference('Vaso grande con vela', 'productos/Vaso grande con vela'),
-  ),
-
-  // Category: Vidrios
-  ProductosRecord(
-    id: 'Vidrio 1',
-    nombre: 'Vidrio 1',
-    precio: 25000.0,
-    foto: 'https://lh3.googleusercontent.com/d/11oF3-k-tSV7FZZz9oI3RDkMrXF4VkI8b',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-01',
-    reference: MockDocumentReference('Vidrio 1', 'productos/Vidrio 1'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 2',
-    nombre: 'Vidrio 2',
-    precio: 25000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1JN0g9JRX2A74qKVDP70hiZrsC36diV4j',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-02',
-    reference: MockDocumentReference('Vidrio 2', 'productos/Vidrio 2'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 3',
-    nombre: 'Vidrio 3',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1lkkB3V5tNpzJbJmrZtcUkR8FiMDtEI3H',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-03',
-    reference: MockDocumentReference('Vidrio 3', 'productos/Vidrio 3'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 4',
-    nombre: 'Vidrio 4',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1rTzwMQBTuWG8QMII4m2OvQXWyAKXvCCu',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-04',
-    reference: MockDocumentReference('Vidrio 4', 'productos/Vidrio 4'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 5',
-    nombre: 'Vidrio 5',
-    precio: 28000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1h4WXu0gKNpoAraSkcGSGJS61Lp-vJ-Lh',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-05',
-    reference: MockDocumentReference('Vidrio 5', 'productos/Vidrio 5'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 6',
-    nombre: 'Vidrio 6',
-    precio: 32000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1RE3w4WGCl8n9qj1UXUA4SZGzDQuuBWCp',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-06',
-    reference: MockDocumentReference('Vidrio 6', 'productos/Vidrio 6'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 7',
-    nombre: 'Vidrio 7',
-    precio: 50000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1SENQbB7MMbJz5IDNsg7cXlaeNpgYXHWO',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-07',
-    reference: MockDocumentReference('Vidrio 7', 'productos/Vidrio 7'),
-  ),
-  ProductosRecord(
-    id: 'Vidrio 8',
-    nombre: 'Vidrio 8',
-    precio: 50000.0,
-    foto: 'https://lh3.googleusercontent.com/d/1HWGPGJvXRpjCSE1MTSW6tBuGgf3NjMMu',
-    categoriaId: 'Vidrios',
-    descripcion: '',
-    codigo: 'VID-08',
-    reference: MockDocumentReference('Vidrio 8', 'productos/Vidrio 8'),
+    foto: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500',
+    categoriaId: 'Buzos',
+    descripcion: 'Cuello redondo clásico de frisa invisible',
+    codigo: 'BUZ-CL',
+    stock: 20,
+    controlStock: true,
+    reference: MockDocumentReference('buzo-classic-crew', 'productos/buzo-classic-crew'),
   ),
 ];
 
@@ -378,7 +247,11 @@ Stream<List<VendedoresRecord>> queryVendedoresRecord({
     query = queryBuilder(query);
   }
   return query.snapshots().map((snapshot) {
-    return snapshot.docs.map((doc) => VendedoresRecord.fromFirestore(doc)).toList();
+    final list = snapshot.docs.map((doc) => VendedoresRecord.fromFirestore(doc)).toList();
+    if (list.isEmpty) {
+      return mockVendedores;
+    }
+    return list;
   });
 }
 
@@ -391,7 +264,11 @@ Stream<List<CategoriasRecord>> queryCategoriasRecord() {
       .collection('categorias')
       .snapshots()
       .map((snapshot) {
-    return snapshot.docs.map((doc) => CategoriasRecord.fromFirestore(doc)).toList();
+    final list = snapshot.docs.map((doc) => CategoriasRecord.fromFirestore(doc)).toList();
+    if (list.isEmpty) {
+      return mockCategorias;
+    }
+    return list;
   });
 }
 
@@ -408,6 +285,10 @@ Stream<List<ProductosRecord>> queryProductosRecord({
     query = queryBuilder(query);
   }
   return query.snapshots().map((snapshot) {
-    return snapshot.docs.map((doc) => ProductosRecord.fromFirestore(doc)).toList();
+    final list = snapshot.docs.map((doc) => ProductosRecord.fromFirestore(doc)).toList();
+    if (list.isEmpty) {
+      return mockProductos;
+    }
+    return list;
   });
 }

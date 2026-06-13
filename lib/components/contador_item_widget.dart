@@ -19,6 +19,8 @@ class ContadorItemWidget extends StatefulWidget {
     this.nombre,
     this.foto,
     this.codigo,
+    this.talle,
+    this.color,
   });
 
   final DocumentReference? productoActual;
@@ -26,6 +28,8 @@ class ContadorItemWidget extends StatefulWidget {
   final String? nombre;
   final String? foto;
   final String? codigo;
+  final String? talle;
+  final String? color;
 
   @override
   State<ContadorItemWidget> createState() => _ContadorItemWidgetState();
@@ -60,7 +64,7 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
     // Synchronize countControllerValue with actual cart quantity in real-time
     if (widget.productoActual != null) {
       final cartIndex = functions.buscarIndiceProducto(
-          FFAppState().carrito.toList(), widget.productoActual!);
+          FFAppState().carrito.toList(), widget.productoActual!, widget.talle ?? '', widget.color ?? '');
       _model.countControllerValue = cartIndex != -1
           ? FFAppState().carrito[cartIndex].cantidad
           : 0;
@@ -106,7 +110,7 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
         updateCount: (newCount) async {
           safeSetState(() => _model.countControllerValue = newCount);
           int index = functions.buscarIndiceProducto(
-              FFAppState().carrito.toList(), widget.productoActual!);
+              FFAppState().carrito.toList(), widget.productoActual!, widget.talle ?? '', widget.color ?? '');
           
           final prod = getProductByRef(widget.productoActual!);
           final double precio = widget.precio ?? prod?.precio ?? 0.0;
@@ -123,6 +127,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
                 imagen: foto,
                 nombre: nombre,
                 codigo: codigo,
+                talle: widget.talle ?? '',
+                color: widget.color ?? '',
               ));
               safeSetState(() {});
             }
@@ -136,6 +142,8 @@ class _ContadorItemWidgetState extends State<ContadorItemWidget> {
                   e.imagen = foto;
                   e.nombre = nombre;
                   e.codigo = codigo;
+                  e.talle = widget.talle ?? '';
+                  e.color = widget.color ?? '';
                 },
               );
               safeSetState(() {});

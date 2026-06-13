@@ -342,6 +342,11 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                 'precio': item.precio,
                                                 'subtotal': item.precio * item.cantidad,
                                                 'codigo': item.codigo,
+                                                'talle': item.talle,
+                                                'color': item.color,
+                                                'producto_ref': (item.productoRef != null && isFirebaseInitialized)
+                                                    ? FirebaseFirestore.instance.doc(item.productoRef!.path)
+                                                    : null,
                                               };
                                             }).toList();
 
@@ -356,7 +361,21 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                             final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
                                             final waUrl = 'https://wa.me/$telefonoDestino?text=$message';
 
-                                            await launchURL(waUrl);
+                                            // Registrar el pedido en Firestore con estado "Pendiente"
+                                            try {
+                                              await FirebaseFirestore.instance.collection('pedidos').add({
+                                                'cliente_nombre': clientName,
+                                                'vendedor_id': targetVendedorId,
+                                                'fecha_creacion': FieldValue.serverTimestamp(),
+                                                'estado': 'Pendiente',
+                                                'total': subtotal,
+                                                'items': cartList,
+                                              });
+                                            } catch (e) {
+                                              debugPrint("Error al crear el pedido en Firestore: $e");
+                                            }
+
+                                             await launchURL(waUrl);
                                           }
                                         },
                                         text: 'Confirmar por WhatsApp',

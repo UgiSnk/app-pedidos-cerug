@@ -7,6 +7,8 @@ class ItemCarritoStruct {
   String imagen;
   String nombre;
   String codigo;
+  String talle;
+  String color;
 
   ItemCarritoStruct({
     this.productoRef,
@@ -15,6 +17,8 @@ class ItemCarritoStruct {
     this.imagen = '',
     this.nombre = '',
     this.codigo = '',
+    this.talle = '',
+    this.color = '',
   });
 
   void incrementCantidad(int value) {
@@ -29,6 +33,8 @@ class ItemCarritoStruct {
       'imagen': imagen,
       'nombre': nombre,
       'codigo': codigo,
+      'talle': talle,
+      'color': color,
     };
   }
 
@@ -40,6 +46,8 @@ class ItemCarritoStruct {
       imagen: data['imagen'] as String? ?? '',
       nombre: data['nombre'] as String? ?? '',
       codigo: data['codigo'] as String? ?? '',
+      talle: data['talle'] as String? ?? '',
+      color: data['color'] as String? ?? '',
     );
   }
 }
