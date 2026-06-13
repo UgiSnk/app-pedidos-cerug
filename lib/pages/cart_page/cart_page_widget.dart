@@ -350,20 +350,16 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                               };
                                             }).toList();
 
-                                            final message = functions.generarMensajeWhatsApp(
+                                            final baseMessage = functions.generarMensajeWhatsApp(
                                               cartList,
                                               clientName,
                                               subtotal,
                                             );
 
-                                            final rawPhone = vendedor?.telefono ?? '5491173564074';
-                                            final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
-                                            final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
-                                            final waUrl = 'https://wa.me/$telefonoDestino?text=$message';
-
+                                            String orderId = '';
                                             // Registrar el pedido en Firestore con estado "Pendiente"
                                             try {
-                                              await FirebaseFirestore.instance.collection('pedidos').add({
+                                              final docRef = await FirebaseFirestore.instance.collection('pedidos').add({
                                                 'cliente_nombre': clientName,
                                                 'vendedor_id': targetVendedorId,
                                                 'fecha_creacion': FieldValue.serverTimestamp(),
@@ -371,11 +367,21 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                                 'total': subtotal,
                                                 'items': cartList,
                                               });
+                                              orderId = docRef.id;
                                             } catch (e) {
                                               debugPrint("Error al crear el pedido en Firestore: $e");
                                             }
 
-                                             await launchURL(waUrl);
+                                            final message = orderId.isNotEmpty
+                                                ? '$baseMessage\n\n*Confirmar entrega (Solo Matías):*\nhttps://pedidos-ropa-cerug.web.app/admin/confirm.html?id=$orderId'
+                                                : baseMessage;
+
+                                            final rawPhone = vendedor?.telefono ?? '5491173564074';
+                                            final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
+                                            final telefonoDestino = cleanPhone.isNotEmpty ? cleanPhone : '5491173564074';
+                                            final waUrl = 'https://wa.me/$telefonoDestino?text=${Uri.encodeComponent(message)}';
+
+                                            await launchURL(waUrl);
                                           }
                                         },
                                         text: 'Confirmar por WhatsApp',
