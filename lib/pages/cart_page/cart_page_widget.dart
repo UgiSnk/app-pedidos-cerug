@@ -358,25 +358,23 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                               subtotal,
                                             );
 
-                                            String orderId = '';
-                                            // Registrar el pedido en Firestore con estado "Pendiente"
-                                            try {
-                                              final docRef = await FirebaseFirestore.instance.collection('pedidos').add({
-                                                'cliente_nombre': clientName,
-                                                'vendedor_id': targetVendedorId,
-                                                'fecha_creacion': FieldValue.serverTimestamp(),
-                                                'estado': 'Pendiente',
-                                                'total': subtotal,
-                                                'items': cartList,
-                                              });
-                                              orderId = docRef.id;
-                                            } catch (e) {
-                                              debugPrint("Error al crear el pedido en Firestore: $e");
-                                            }
+                                            // Generar el ID localmente de forma síncrona (evita retrasos de red y bloqueos de popups)
+                                            final docRef = FirebaseFirestore.instance.collection('pedidos').doc();
+                                            final orderId = docRef.id;
 
-                                            final message = orderId.isNotEmpty
-                                                ? '$baseMessage\n\n*Confirmar entrega (Solo Matías):*\nhttps://pedidos-ropa-cerug.web.app/admin/confirm.html?id=$orderId'
-                                                : baseMessage;
+                                            // Registrar en Firestore de forma asíncrona (sin bloquear el hilo de ejecución principal)
+                                            docRef.set({
+                                              'cliente_nombre': clientName,
+                                              'vendedor_id': targetVendedorId,
+                                              'fecha_creacion': FieldValue.serverTimestamp(),
+                                              'estado': 'Pendiente',
+                                              'total': subtotal,
+                                              'items': cartList,
+                                            }).catchError((e) {
+                                              debugPrint("Error al crear el pedido en Firestore: $e");
+                                            });
+
+                                            final message = '$baseMessage\n\n*Confirmar entrega (Solo Matías):*\nhttps://pedidos-ropa-cerug.web.app/admin/confirm.html?id=$orderId';
 
                                             final rawPhone = vendedor?.telefono ?? '5491173564074';
                                             final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');
