@@ -103,10 +103,10 @@ String formatNumber(
 
 Future<void> launchURL(String url) async {
   final uri = Uri.parse(url);
-  if (await ul.canLaunchUrl(uri)) {
+  try {
     await ul.launchUrl(uri, mode: ul.LaunchMode.externalApplication);
-  } else {
-    print('Could not launch $url');
+  } catch (e) {
+    print('Could not launch $url: $e');
   }
 }
 
