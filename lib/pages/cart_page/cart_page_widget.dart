@@ -259,6 +259,11 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                               children: [
                                 TextFormField(
                                   controller: _nameController,
+                                  style: TextStyle(
+                                    fontFamily: 'Vollkorn SC',
+                                    color: FlutterFlowTheme.of(context).primary,
+                                    fontSize: 16,
+                                  ),
                                   decoration: InputDecoration(
                                     labelText: 'Nombre del Cliente',
                                     labelStyle: FlutterFlowTheme.of(context).labelMedium,
