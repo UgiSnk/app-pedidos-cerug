@@ -931,7 +931,8 @@ document.getElementById("product-form").addEventListener("submit", async (e) => 
         const uploadResult = await uploadBytes(imgRef, prodSelectedFile);
         finalImageUrl = await getDownloadURL(uploadResult.ref);
       } catch (err) {
-        console.error("Error cargando foto a Firebase Storage:", err);
+        console.warn("Storage upload failed (CORS/Permissions). Falling back to Base64:", err);
+        finalImageUrl = await convertFileToBase64(prodSelectedFile);
       }
     }
   }
@@ -1110,7 +1111,8 @@ document.getElementById("category-form").addEventListener("submit", async (e) =>
         const uploadResult = await uploadBytes(imgRef, catSelectedFile);
         finalImageUrl = await getDownloadURL(uploadResult.ref);
       } catch (err) {
-        console.error("Error al subir foto de categoría:", err);
+        console.warn("Storage upload failed (CORS/Permissions). Falling back to Base64:", err);
+        finalImageUrl = await convertFileToBase64(catSelectedFile);
       }
     }
   }
@@ -1275,7 +1277,8 @@ document.getElementById("seller-form").addEventListener("submit", async (e) => {
         const uploadResult = await uploadBytes(imgRef, sellerSelectedFile);
         finalImageUrl = await getDownloadURL(uploadResult.ref);
       } catch (err) {
-        console.error("Error al subir foto de vendedor:", err);
+        console.warn("Storage upload failed (CORS/Permissions). Falling back to Base64:", err);
+        finalImageUrl = await convertFileToBase64(sellerSelectedFile);
       }
     }
   }
