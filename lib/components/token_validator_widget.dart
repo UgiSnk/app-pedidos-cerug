@@ -44,12 +44,12 @@ class _TokenValidatorWidgetState extends State<TokenValidatorWidget> {
 
   Future<String> _getOrCreateDeviceId() async {
     final prefs = await SharedPreferences.getInstance();
-    String? deviceId = prefs.getString('component_device_id');
+    String? deviceId = prefs.getString('cerug_device_id');
     if (deviceId == null || deviceId.isEmpty) {
       final rand = math.Random.secure();
       final values = List<int>.generate(16, (i) => rand.nextInt(256));
       deviceId = values.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
-      await prefs.setString('component_device_id', deviceId);
+      await prefs.setString('cerug_device_id', deviceId);
     }
     return deviceId;
   }
@@ -256,7 +256,7 @@ class _TokenValidatorWidgetState extends State<TokenValidatorWidget> {
                     height: 48,
                     child: ElevatedButton(
                       onPressed: () async {
-                        final url = Uri.parse('https://www.instagram.com/component_yz');
+                        final url = Uri.parse('https://www.instagram.com/cerug');
                         if (await launchUrl(url, mode: LaunchMode.externalApplication)) {
                           // successfully launched
                         }

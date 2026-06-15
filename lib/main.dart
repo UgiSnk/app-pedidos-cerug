@@ -36,7 +36,7 @@ final GoRouter _router = GoRouter(
       name: 'NavBarPage',
       builder: (BuildContext context, GoRouterState state) {
         final rawPage = state.uri.queryParameters['page'] ?? 'HomePage';
-        final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_component';
+        final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_cerug';
         final token = state.uri.queryParameters['token'];
         
         String initialPage = 'HomePage';
@@ -62,7 +62,7 @@ final GoRouter _router = GoRouter(
       path: '/productsPage',
       name: ProductsPageWidget.routeName,
       builder: (BuildContext context, GoRouterState state) {
-        final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_component';
+        final vendedorID = state.uri.queryParameters['vendedorID'] ?? 'vendedor_cerug';
         final categoriaRef = state.uri.queryParameters['categoriaRef'] ?? '';
         final token = state.uri.queryParameters['token'];
         return TokenValidatorWidget(
@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Component New House',
+      title: 'CERUG',
       theme: ThemeData(
         primaryColor: FlutterFlowTheme.of(context).primary,
         scaffoldBackgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -193,7 +193,7 @@ class _NavBarPageState extends State<NavBarPage> {
         currentIndex: currentIndex,
         onTap: (i) async {
           if (i == 0) {
-            await launchURL('https://www.instagram.com/component_yz');
+            await launchURL('https://www.instagram.com/cerug');
           } else {
             setState(() {
               _page = null;

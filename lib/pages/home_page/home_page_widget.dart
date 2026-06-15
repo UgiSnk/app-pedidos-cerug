@@ -83,7 +83,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         if (homePageVendedoresRecordList.isEmpty) {
           return Container();
         }
-        final targetVendedorId = widget.vendedorID ?? 'vendedor_component';
+        final targetVendedorId = widget.vendedorID ?? 'vendedor_cerug';
         debugPrint('HOMEPAGE_DEBUG: targetVendedorId=$targetVendedorId');
         debugPrint('HOMEPAGE_DEBUG: list=${homePageVendedoresRecordList.map((v) => "${v.id}:${v.nombre}").toList()}');
         VendedoresRecord? homePageVendedoresRecord;

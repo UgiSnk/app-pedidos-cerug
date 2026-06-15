@@ -1350,7 +1350,7 @@ downloadTemplateBtn.addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", "plantilla_productos_component.csv");
+  link.setAttribute("download", "plantilla_productos_cerug.csv");
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();

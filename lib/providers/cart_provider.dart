@@ -52,7 +52,7 @@ class CartProvider with ChangeNotifier {
   }
 
   String generateWhatsAppMessage(String clientName) {
-    String message = "📢 *NUEVO PEDIDO RECIBIDO - COMPONENT*\n";
+    String message = "📢 *NUEVO PEDIDO RECIBIDO - CERUG*\n";
     message += "👤 *Cliente:* $clientName\n";
     message += "---------------------------------\n\n";
     message += "📦 *Detalle del Pedido:*\n";

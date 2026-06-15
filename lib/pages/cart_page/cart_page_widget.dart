@@ -106,7 +106,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
               final vendedores = snapshot.data ?? [];
               final targetVendedorId = FFAppState().vendedorActual.isNotEmpty
                   ? FFAppState().vendedorActual
-                  : 'vendedor_component';
+                  : 'vendedor_cerug';
               VendedoresRecord? vendedor;
               if (vendedores.isNotEmpty) {
                 try {

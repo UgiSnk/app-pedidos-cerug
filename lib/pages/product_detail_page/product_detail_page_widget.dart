@@ -328,7 +328,7 @@ class _ProductDetailPageWidgetState extends State<ProductDetailPageWidget> {
           currentIndex: 1,
           onTap: (i) async {
             if (i == 0) {
-              await launchURL('https://www.instagram.com/component_yz');
+              await launchURL('https://www.instagram.com/cerug');
             } else if (i == 1) {
               context.go('/');
             } else if (i == 2) {

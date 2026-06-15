@@ -10,7 +10,7 @@ class FFAppState extends ChangeNotifier {
 
   FFAppState._internal();
 
-  String _vendedorActual = 'vendedor_component';
+  String _vendedorActual = 'vendedor_cerug';
   String get vendedorActual => _vendedorActual;
   set vendedorActual(String value) {
     _vendedorActual = value;
