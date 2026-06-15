@@ -203,7 +203,7 @@ confirmBtn.addEventListener("click", async () => {
           const prodSnap = await transaction.get(prodRef);
           if (prodSnap.exists()) {
             const prodData = prodSnap.data();
-            if (prodData.control_stock === true) {
+            if (prodData.control_stock !== false) {
               const currentStock = Number(prodData.stock || 0);
               const newStock = currentStock - Number(item.cantidad || 0);
               transaction.update(prodRef, { stock: newStock < 0 ? 0 : newStock });

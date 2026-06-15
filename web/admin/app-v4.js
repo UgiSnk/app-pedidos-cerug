@@ -1859,13 +1859,25 @@ function renderOrdersTable() {
     let actionBtnHtml = "";
     if (order.estado === 'Pendiente') {
       actionBtnHtml = `
-        <button onclick="confirmOrderDelivery('${order.id}')" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/10 transition-all mx-auto">
-          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          <span>Entregado</span>
-        </button>
+        <div class="flex items-center justify-center gap-2">
+          <button onclick="confirmOrderDelivery('${order.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1 shadow-md transition-all">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span>Entregado</span>
+          </button>
+          <button onclick="deleteOrder('${order.id}')" class="p-2 hover:bg-red-500/20 hover:text-red-500 text-slate-400 rounded-lg transition-all" title="Eliminar Pedido">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </button>
+        </div>
       `;
     } else {
-      actionBtnHtml = `<span class="text-xs text-slate-500 italic text-center block">Completado</span>`;
+      actionBtnHtml = `
+        <div class="flex items-center justify-center gap-2">
+          <span class="text-xs text-slate-500 italic">Entregado</span>
+          <button onclick="deleteOrder('${order.id}')" class="p-2 hover:bg-red-500/20 hover:text-red-500 text-slate-400 rounded-lg transition-all" title="Eliminar Pedido">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+          </button>
+        </div>
+      `;
     }
     
     tr.innerHTML = `
@@ -1881,6 +1893,34 @@ function renderOrdersTable() {
     tableBody.appendChild(tr);
   });
 }
+
+async function deleteOrder(orderId) {
+  if (!confirm("¿Estás seguro de que deseas eliminar este pedido permanentemente? Esta acción no se puede deshacer.")) {
+    return;
+  }
+  if (useMock) {
+    let orders = JSON.parse(localStorage.getItem("admin_pedidos") || "[]");
+    orders = orders.filter(o => o.id !== orderId);
+    localStorage.setItem("admin_pedidos", JSON.stringify(orders));
+    allOrders = orders;
+    renderDashboardStats();
+    renderOrdersTable();
+    alert("Pedido eliminado localmente.");
+  } else {
+    try {
+      restoreFirebaseRefs();
+      await deleteDoc(doc(db, "pedidos", orderId));
+      allOrders = allOrders.filter(o => o.id !== orderId);
+      renderDashboardStats();
+      renderOrdersTable();
+      alert("Pedido eliminado de Firestore.");
+    } catch (err) {
+      console.error("Error al eliminar pedido:", err);
+      alert("Error al eliminar pedido: " + err.message);
+    }
+  }
+}
+window.deleteOrder = deleteOrder;
 
 async function confirmOrderDelivery(orderId) {
   if (confirm("¿Estás seguro de confirmar la entrega de este pedido? Esto descontará los productos del stock disponible.")) {
@@ -1933,14 +1973,24 @@ async function confirmOrderDelivery(orderId) {
           
           const items = orderData.items || [];
           for (let item of items) {
-            if (item.producto_ref) {
-              const prodSnap = await transaction.get(item.producto_ref);
+            let prodRef = item.producto_ref;
+            if (!prodRef && item.producto_path) {
+              prodRef = doc(db, item.producto_path);
+            } else if (!prodRef && item.producto_id) {
+              prodRef = doc(db, "productos", item.producto_id);
+            } else if (!prodRef && item.nombre) {
+              const guessId = item.nombre.toLowerCase().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '');
+              prodRef = doc(db, "productos", guessId);
+            }
+
+            if (prodRef) {
+              const prodSnap = await transaction.get(prodRef);
               if (prodSnap.exists()) {
                 const prodData = prodSnap.data();
-                if (prodData.control_stock === true) {
+                if (prodData.control_stock !== false) {
                   const currentStock = Number(prodData.stock || 0);
                   const newStock = currentStock - Number(item.cantidad || 0);
-                  transaction.update(item.producto_ref, { stock: newStock < 0 ? 0 : newStock });
+                  transaction.update(prodRef, { stock: newStock < 0 ? 0 : newStock });
                 }
               }
             }
@@ -1959,3 +2009,50 @@ async function confirmOrderDelivery(orderId) {
   }
 }
 window.confirmOrderDelivery = confirmOrderDelivery;
+
+// Event Listener para Vaciar Pedidos
+document.addEventListener("DOMContentLoaded", () => {
+  const clearOrdersBtn = document.getElementById("clear-orders-btn");
+  if (clearOrdersBtn) {
+    clearOrdersBtn.addEventListener("click", async () => {
+      if (!confirm("¿Estás seguro de que deseas eliminar TODOS los pedidos permanentemente? Esta acción no se puede deshacer.")) {
+        return;
+      }
+      
+      if (useMock) {
+        localStorage.setItem("admin_pedidos", "[]");
+        allOrders = [];
+        renderOrdersTable();
+        alert("Pedidos simulados eliminados del almacenamiento local.");
+      } else {
+        try {
+          clearOrdersBtn.disabled = true;
+          clearOrdersBtn.innerText = "Eliminando...";
+          
+          const ordersSnap = await getDocs(collection(db, "pedidos"));
+          const deletePromises = [];
+          ordersSnap.forEach(docSnap => {
+            deletePromises.push(deleteDoc(doc(db, "pedidos", docSnap.id)));
+          });
+          
+          await Promise.all(deletePromises);
+          
+          allOrders = [];
+          renderOrdersTable();
+          alert("Todos los pedidos han sido eliminados de la base de datos.");
+        } catch (err) {
+          console.error("Error al eliminar pedidos:", err);
+          alert("Error al eliminar los pedidos: " + err.message);
+        } finally {
+          clearOrdersBtn.disabled = false;
+          clearOrdersBtn.innerHTML = `
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Vaciar Pedidos
+          `;
+        }
+      }
+    });
+  }
+});
