@@ -374,7 +374,7 @@ class _CartPageWidgetState extends State<CartPageWidget> {
                                               debugPrint("Error al crear el pedido en Firestore: $e");
                                             });
 
-                                            final message = '$baseMessage\n\n*Confirmar entrega (Solo Matías):*\nhttps://pedidos-ropa-cerug.web.app/admin/confirm.html?id=$orderId';
+                                            final message = '$baseMessage\n\n*Confirmar entrega:*\nhttps://pedidos-ropa-cerug.web.app/admin/confirm.html?id=$orderId';
 
                                             final rawPhone = vendedor?.telefono ?? '5491173564074';
                                             final cleanPhone = rawPhone.replaceAll(RegExp(r'\D'), '');

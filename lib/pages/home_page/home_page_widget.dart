@@ -115,7 +115,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                       font: GoogleFonts.lora(
                         fontWeight: FontWeight.bold,
                       ),
-                      color: const Color(0xFF111111),
+                      color: FlutterFlowTheme.of(context).primary,
                       fontSize: 24,
                       letterSpacing: 2.0,
                     ),
