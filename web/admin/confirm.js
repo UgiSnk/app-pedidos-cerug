@@ -188,6 +188,9 @@ confirmBtn.addEventListener("click", async () => {
       }
       
       const items = orderData.items || [];
+      const productUpdates = [];
+
+      // Phase 1: Read all products
       for (let item of items) {
         let prodRef = item.producto_ref;
         if (!prodRef && item.producto_path) {
@@ -206,10 +209,18 @@ confirmBtn.addEventListener("click", async () => {
             if (prodData.control_stock !== false) {
               const currentStock = Number(prodData.stock || 0);
               const newStock = currentStock - Number(item.cantidad || 0);
-              transaction.update(prodRef, { stock: newStock < 0 ? 0 : newStock });
+              productUpdates.push({
+                ref: prodRef,
+                newStock: newStock < 0 ? 0 : newStock
+              });
             }
           }
         }
+      }
+
+      // Phase 2: Update all products
+      for (const update of productUpdates) {
+        transaction.update(update.ref, { stock: update.newStock });
       }
       
       transaction.update(orderRef, { estado: 'Entregado' });
