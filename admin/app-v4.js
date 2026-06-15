@@ -339,7 +339,21 @@ async function loadInitialData() {
         });
       });
       if (allProducts.length === 0) {
-        allProducts = JSON.parse(JSON.stringify(defaultMockProductos));
+        console.log("[Firebase] La colección 'productos' está vacía. Inicializando con mock...");
+        for (const prod of defaultMockProductos) {
+          await setDoc(doc(db, "productos", prod.id), {
+            nombre: prod.nombre,
+            precio: prod.precio,
+            foto: prod.foto,
+            categoria_id: prod.categoria_id,
+            descripcion: prod.descripcion,
+            codigo: prod.codigo,
+            stock: prod.stock,
+            control_stock: prod.control_stock
+          });
+        }
+        await loadInitialData();
+        return;
       }
 
       // Categorías
@@ -353,7 +367,17 @@ async function loadInitialData() {
           imagen: data.imagen || ''
         });
       });
-      if (allCategories.length === 0) allCategories = JSON.parse(JSON.stringify(defaultMockCategorias));
+      if (allCategories.length === 0) {
+        console.log("[Firebase] La colección 'categorias' está vacía. Inicializando con mock...");
+        for (const cat of defaultMockCategorias) {
+          await setDoc(doc(db, "categorias", cat.id), {
+            nombre: cat.nombre,
+            imagen: cat.imagen
+          });
+        }
+        await loadInitialData();
+        return;
+      }
 
       // Vendedores
       const sellerSnap = await getDocs(collection(db, "vendedores"));
@@ -367,7 +391,18 @@ async function loadInitialData() {
           miniatura: data.miniatura || ''
         });
       });
-      if (allSellers.length === 0) allSellers = defaultMockVendedores;
+      if (allSellers.length === 0) {
+        console.log("[Firebase] La colección 'vendedores' está vacía. Inicializando con mock...");
+        for (const sel of defaultMockVendedores) {
+          await setDoc(doc(db, "vendedores", sel.id), {
+            nombre: sel.nombre,
+            telefono: sel.telefono,
+            miniatura: sel.miniatura
+          });
+        }
+        await loadInitialData();
+        return;
+      }
 
       // Tokens / Enlaces únicos de Clientes
       try {
