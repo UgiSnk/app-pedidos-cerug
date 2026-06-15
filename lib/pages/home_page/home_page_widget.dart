@@ -106,7 +106,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: AppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
               surfaceTintColor: Colors.transparent,
               automaticallyImplyLeading: false,
               title: Text(
@@ -185,10 +185,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: FlutterFlowTheme.of(context).secondaryBackground,
                               borderRadius: BorderRadius.circular(30),
                               border: Border.all(
-                                color: const Color(0xFFE2E8F0),
+                                color: FlutterFlowTheme.of(context).alternate,
                                 width: 1.0,
                               ),
                             ),
@@ -216,9 +216,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       border: InputBorder.none,
                                       isDense: true,
                                     ),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontFamily: 'Helvetica',
-                                      color: Color(0xFF2D3748),
+                                      color: FlutterFlowTheme.of(context).primaryText,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -254,21 +254,22 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
                             return Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: FlutterFlowTheme.of(context).secondaryBackground,
                                 borderRadius: BorderRadius.circular(30),
                                 border: Border.all(
-                                  color: const Color(0xFFE2E8F0),
+                                  color: FlutterFlowTheme.of(context).alternate,
                                   width: 1.0,
                                 ),
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
+                                  dropdownColor: FlutterFlowTheme.of(context).secondaryBackground,
                                   value: _selectedCategory,
                                   icon: const Icon(Icons.filter_list, color: Color(0xFFDCC39A)),
                                   elevation: 3,
                                   style: GoogleFonts.lora(
-                                    color: const Color(0xFF373126),
+                                    color: FlutterFlowTheme.of(context).primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),
